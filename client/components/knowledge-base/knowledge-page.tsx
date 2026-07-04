@@ -1,13 +1,46 @@
 'use client';
 
-import { Upload } from 'lucide-react';
-
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
-import { Button } from '@/components/ui/button';
 
 import { DocumentsTable } from './documents-table';
+import { useDocuments } from '@/features/documents/use-documents';
+import { UploadDocumentButton } from './upload-document-button';
 
 export function KnowledgePage() {
+  const { data, isLoading } =
+    useDocuments();
+
+  const documents =
+    data?.data ?? [];
+
+  const totalDocuments =
+    documents.length;
+
+  const readyDocuments =
+    documents.filter(
+      (doc: any) =>
+        doc.status === 'READY',
+    ).length;
+
+  const processingDocuments =
+    documents.filter(
+      (doc: any) =>
+        doc.status ===
+        'PROCESSING',
+    ).length;
+
+  const totalChunks =
+    documents.reduce(
+      (
+        total: number,
+        doc: any,
+      ) =>
+        total +
+        (doc._count?.chunks ??
+          0),
+      0,
+    );
+
   return (
     <DashboardLayout>
 
@@ -29,13 +62,7 @@ export function KnowledgePage() {
 
           </div>
 
-          <Button>
-
-            <Upload size={18} />
-
-            Upload Document
-
-          </Button>
+          <UploadDocumentButton />
 
         </div>
 
@@ -50,7 +77,9 @@ export function KnowledgePage() {
             </p>
 
             <h2 className="mt-3 text-3xl font-bold">
-              0
+              {isLoading
+                ? '--'
+                : totalDocuments}
             </h2>
 
           </div>
@@ -58,11 +87,13 @@ export function KnowledgePage() {
           <div className="rounded-2xl border border-border bg-card p-6">
 
             <p className="text-sm text-muted-foreground">
-              Indexed
+              Ready
             </p>
 
             <h2 className="mt-3 text-3xl font-bold text-emerald-500">
-              0
+              {isLoading
+                ? '--'
+                : readyDocuments}
             </h2>
 
           </div>
@@ -74,7 +105,9 @@ export function KnowledgePage() {
             </p>
 
             <h2 className="mt-3 text-3xl font-bold text-yellow-500">
-              0
+              {isLoading
+                ? '--'
+                : processingDocuments}
             </h2>
 
           </div>
@@ -86,7 +119,9 @@ export function KnowledgePage() {
             </p>
 
             <h2 className="mt-3 text-3xl font-bold">
-              0
+              {isLoading
+                ? '--'
+                : totalChunks}
             </h2>
 
           </div>

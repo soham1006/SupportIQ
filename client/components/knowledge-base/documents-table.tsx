@@ -10,32 +10,8 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
-const documents = [
-  {
-    id: '1',
-    name: 'Employee Handbook.pdf',
-    status: 'INDEXED',
-    chunks: 124,
-    size: '2.4 MB',
-    uploaded: '2 hours ago',
-  },
-  {
-    id: '2',
-    name: 'Refund Policy.pdf',
-    status: 'INDEXED',
-    chunks: 58,
-    size: '1.1 MB',
-    uploaded: 'Yesterday',
-  },
-  {
-    id: '3',
-    name: 'HR Guidelines.pdf',
-    status: 'PROCESSING',
-    chunks: '-',
-    size: '3.2 MB',
-    uploaded: 'Just now',
-  },
-];
+import { useDocuments } from '@/features/documents/use-documents';
+import { useDeleteDocument } from '@/features/documents/use-delete-document';
 
 function StatusBadge({
   status,
@@ -43,10 +19,10 @@ function StatusBadge({
   status: string;
 }) {
   switch (status) {
-    case 'INDEXED':
+    case 'READY':
       return (
         <Badge variant="success">
-          Indexed
+          Ready
         </Badge>
       );
 
@@ -54,6 +30,13 @@ function StatusBadge({
       return (
         <Badge variant="warning">
           Processing
+        </Badge>
+      );
+
+    case 'FAILED':
+      return (
+        <Badge variant="destructive">
+          Failed
         </Badge>
       );
 
@@ -67,6 +50,48 @@ function StatusBadge({
 }
 
 export function DocumentsTable() {
+  const { data, isLoading } =
+    useDocuments();
+
+  const deleteDocument =
+    useDeleteDocument();
+
+  const documents =
+    data?.data ?? [];
+
+  if (isLoading) {
+    return (
+      <div className="flex h-64 items-center justify-center text-muted-foreground">
+        Loading documents...
+      </div>
+    );
+  }
+
+  if (!documents.length) {
+    return (
+      <div className="flex h-64 flex-col items-center justify-center gap-3">
+
+        <FileText
+          size={42}
+          className="text-muted-foreground"
+        />
+
+        <div className="text-center">
+
+          <h3 className="font-semibold">
+            No documents uploaded
+          </h3>
+
+          <p className="text-sm text-muted-foreground">
+            Upload your first PDF to start building your AI knowledge base.
+          </p>
+
+        </div>
+
+      </div>
+    );
+  }
+
   return (
     <div className="overflow-x-auto">
 
@@ -98,7 +123,7 @@ export function DocumentsTable() {
 
         <tbody>
 
-          {documents.map(doc => (
+          {documents.map((doc: any) => (
 
             <tr
               key={doc.id}
@@ -121,7 +146,7 @@ export function DocumentsTable() {
                   <div>
 
                     <p className="font-medium">
-                      {doc.name}
+                      {doc.title}
                     </p>
 
                     <p className="text-sm text-muted-foreground">
@@ -135,21 +160,31 @@ export function DocumentsTable() {
               </td>
 
               <td>
+
                 <StatusBadge
                   status={doc.status}
                 />
+
               </td>
 
               <td>
-                {doc.chunks}
+
+                {doc._count?.chunks ?? 0}
+
               </td>
 
               <td>
-                {doc.size}
+
+                {(doc.fileSize / 1024 / 1024).toFixed(2)} MB
+
               </td>
 
               <td>
-                {doc.uploaded}
+
+                {new Date(
+                  doc.createdAt,
+                ).toLocaleDateString()}
+
               </td>
 
               <td>
@@ -159,6 +194,7 @@ export function DocumentsTable() {
                   <Button
                     variant="ghost"
                     size="icon"
+                    title="Re-index (Coming Soon)"
                   >
                     <RefreshCcw
                       size={16}
@@ -168,6 +204,14 @@ export function DocumentsTable() {
                   <Button
                     variant="ghost"
                     size="icon"
+                    disabled={
+                      deleteDocument.isPending
+                    }
+                    onClick={() =>
+                      deleteDocument.mutate(
+                        doc.id,
+                      )
+                    }
                   >
                     <Trash2
                       size={16}

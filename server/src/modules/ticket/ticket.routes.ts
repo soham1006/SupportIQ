@@ -5,9 +5,28 @@ import { authenticate } from '../auth/auth.middleware';
 import { ticketController } from './ticket.controller';
 
 import { validate } from '../../shared/middleware/validate';
-import { assignTicketSchema, createReplySchema, updateTicketStatusSchema } from './ticket.validation';
+
+import {
+  createTicketSchema,
+  assignTicketSchema,
+  createReplySchema,
+  updateTicketStatusSchema,
+} from './ticket.validation';
 
 const router = Router();
+
+/* ---------------- Create Ticket ---------------- */
+
+router.post(
+  '/',
+  authenticate,
+  validate(createTicketSchema),
+  ticketController.create.bind(
+    ticketController,
+  ),
+);
+
+/* ---------------- Get All ---------------- */
 
 router.get(
   '/',
@@ -17,6 +36,18 @@ router.get(
   ),
 );
 
+/* ---------------- My Tickets ---------------- */
+
+router.get(
+  '/my',
+  authenticate,
+  ticketController.getMyTickets.bind(
+    ticketController,
+  ),
+);
+
+/* ---------------- Get By Id ---------------- */
+
 router.get(
   '/:id',
   authenticate,
@@ -24,6 +55,8 @@ router.get(
     ticketController,
   ),
 );
+
+/* ---------------- Reply ---------------- */
 
 router.post(
   '/:id/replies',
@@ -34,6 +67,8 @@ router.post(
   ),
 );
 
+/* ---------------- AI Reply ---------------- */
+
 router.post(
   '/:id/ai-reply',
   authenticate,
@@ -41,6 +76,8 @@ router.post(
     ticketController,
   ),
 );
+
+/* ---------------- Status ---------------- */
 
 router.patch(
   '/:id/status',
@@ -51,13 +88,7 @@ router.patch(
   ),
 );
 
-router.get(
-  '/my',
-  authenticate,
-  ticketController.getMyTickets.bind(
-    ticketController,
-  ),
-);
+/* ---------------- Assign ---------------- */
 
 router.patch(
   '/:id/assign',

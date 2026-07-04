@@ -15,6 +15,7 @@ import {
   swaggerUi,
   swaggerDocument,
 } from './config/swagger';
+import documentRoutes from './modules/documents/document.routes';
 
 const app = express();
 
@@ -38,6 +39,10 @@ app.use(
   '/api/docs',
   swaggerUi.serve,
   swaggerUi.setup(swaggerDocument),
+);
+app.use(
+  '/api/v1/documents',
+  documentRoutes,
 );
 app.use(notFoundHandler);
 

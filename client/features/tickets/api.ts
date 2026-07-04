@@ -1,5 +1,20 @@
 import {api} from '@/lib/api';
 
+/* ---------------- Create Ticket ---------------- */
+
+export async function createTicket(data: {
+  subject: string;
+  description: string;
+  priority: 'LOW' | 'MEDIUM' | 'HIGH';
+}) {
+  const response = await api.post(
+    '/tickets',
+    data,
+  );
+
+  return response.data;
+}
+
 /* ---------------- Tickets ---------------- */
 
 export async function getTickets() {
@@ -24,7 +39,7 @@ export async function createReply(
   message: string,
 ) {
   const { data } = await api.post(
-    `/tickets/${ticketId}/reply`,
+    `/tickets/${ticketId}/replies`,
     {
       message,
     },

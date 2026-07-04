@@ -1,7 +1,7 @@
 import { ticketRepository } from './ticket.repository';
 import { agentReplyService } from '../ai/agent-reply.service';
 import { ApiError } from '../../utils/ApiError';
-import { TicketStatus } from '@prisma/client';
+import { TicketPriority, TicketStatus } from '@prisma/client';
 import { UserRole } from '@prisma/client';
 import { ticketAuthorization } from './ticket.authorization';
 
@@ -24,6 +24,34 @@ export class TicketService {
     user,
   );
 }
+
+async create(
+  data: {
+    organizationId: string;
+    customerId: string;
+    subject: string;
+    description: string;
+    priority: TicketPriority;
+  },
+) {
+  return ticketRepository.create({
+    organizationId:
+      data.organizationId,
+
+    customerId:
+      data.customerId,
+
+    subject: data.subject,
+
+    description:
+      data.description,
+
+    priority: data.priority,
+
+    aiConfidence: 0,
+  });
+}
+
 async createReply(
   ticketId: string,
   userId: string,

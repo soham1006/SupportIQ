@@ -1,5 +1,5 @@
 import { prisma } from '../../database/prisma';
-import { TicketStatus } from '@prisma/client';
+import {  TicketPriority, TicketStatus } from '@prisma/client';
 
 export class TicketRepository {
  async create(data: {
@@ -7,6 +7,7 @@ export class TicketRepository {
   customerId: string;
   subject: string;
   description: string;
+  priority: TicketPriority;
   aiConfidence: number;
 }){
    return prisma.ticket.create({
@@ -26,6 +27,8 @@ export class TicketRepository {
     subject: data.subject,
 
     description: data.description,
+
+    priority: data.priority,
 
     aiConfidence: data.aiConfidence,
 
@@ -251,6 +254,8 @@ async assignTicket(
     },
   });
 }
+
+
 }
 
 export const ticketRepository =

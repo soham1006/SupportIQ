@@ -1,10 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus } from 'lucide-react';
+import { CreateTicketDialog } from './create-ticket-dialog';
 
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
-import { Button } from '@/components/ui/button';
 
 import { TicketStats } from './ticket-stats';
 import { TicketFilters } from './ticket-filters';
@@ -40,13 +39,7 @@ export function TicketsPage() {
 
           </div>
 
-          <Button className="rounded-xl">
-
-            <Plus size={18} />
-
-            Create Ticket
-
-          </Button>
+         <CreateTicketDialog />
 
         </div>
 

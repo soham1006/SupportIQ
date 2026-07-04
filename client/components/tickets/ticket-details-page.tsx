@@ -2,7 +2,6 @@
 
 import {
   ArrowLeft,
-  Clock3,
   User,
 } from 'lucide-react';
 
@@ -28,6 +27,9 @@ import { useAIReply } from '@/features/tickets/use-ai-reply';
 import { StatusSelector } from './status-selector';
 
 import { useUpdateTicketStatus } from '@/features/tickets/use-update-ticket-status';
+
+import { TimelineCard } from './timeline-card';
+import { ErrorState } from '../shared/error-state';
 
 export function TicketDetailsPage() {
 
@@ -74,6 +76,9 @@ async function handleGenerate() {
   const { data, isLoading } =
     useTicket(ticketId);
 
+    const updateStatus =
+  useUpdateTicketStatus();
+
   const ticket = data?.data;
 
   if (isLoading) {
@@ -86,12 +91,21 @@ async function handleGenerate() {
     );
   }
 
-  const updateStatus =
-  useUpdateTicketStatus();
+    if (!ticket) {
+  return (
+    <DashboardLayout>
+      <ErrorState
+        title="Ticket not found"
+        description="The requested ticket does not exist or you don't have permission to view it."
+      />
+    </DashboardLayout>
+  );
+}
+
 
   return (
     <DashboardLayout>
-      <div className="space-y-8">
+      <div className="space-y-8 animate-in fade-in duration-300">
 
         {/* Header */}
 
@@ -175,7 +189,23 @@ async function handleGenerate() {
 
       <div className="rounded-xl border border-dashed border-border p-8 text-center text-muted-foreground">
 
-        No replies yet.
+        <div className="rounded-2xl border border-dashed border-border p-10 text-center">
+
+  <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+
+    💬
+
+  </div>
+
+  <h3 className="text-lg font-semibold">
+    No replies yet
+  </h3>
+
+  <p className="mt-2 text-muted-foreground">
+    Start the conversation by replying or generating an AI draft.
+  </p>
+
+</div>
 
       </div>
 
@@ -360,60 +390,9 @@ async function handleGenerate() {
 
             {/* Timeline */}
 
-            <div className="rounded-2xl border border-border bg-card p-6">
-
-              <h2 className="mb-5 text-lg font-semibold">
-                Timeline
-              </h2>
-
-              <div className="space-y-5">
-
-                <div className="flex gap-3">
-
-                  <Clock3
-                    size={18}
-                    className="mt-1 text-primary"
-                  />
-
-                  <div>
-
-                    <p className="font-medium">
-                      Ticket Created
-                    </p>
-
-                    <p className="text-sm text-muted-foreground">
-                      {ticket?.createdAt ??
-                        'Today'}
-                    </p>
-
-                  </div>
-
-                </div>
-
-                <div className="flex gap-3">
-
-                  <Clock3
-                    size={18}
-                    className="mt-1 text-primary"
-                  />
-
-                  <div>
-
-                    <p className="font-medium">
-                      AI Responded
-                    </p>
-
-                    <p className="text-sm text-muted-foreground">
-                      Waiting...
-                    </p>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            </div>
+            <TimelineCard
+  ticket={ticket}
+/>
 
           </div>
 
@@ -422,4 +401,5 @@ async function handleGenerate() {
       </div>
     </DashboardLayout>
   );
+  
 }

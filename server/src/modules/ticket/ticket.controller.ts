@@ -5,7 +5,7 @@ import {
 
 import { AuthRequest } from '../../shared/types/AuthRequest';
 import { ticketService } from './ticket.service';
-import {CreateReplyInput, UpdateTicketStatusInput, AssignTicketInput,} from './ticket.validation';
+import {CreateTicketInput, CreateReplyInput, UpdateTicketStatusInput, AssignTicketInput,} from './ticket.validation';
 
 export class TicketController {
   async getAll(
@@ -34,6 +34,7 @@ export class TicketController {
       next(error);
     }
   }
+
   async getById(
   req: AuthRequest,
   res: Response,
@@ -71,6 +72,51 @@ const ticket = await ticketService.getById(
     next(error);
   }
 }
+
+async create(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Unauthorized',
+      });
+    }
+
+    const {
+      subject,
+      description,
+      priority,
+    } =
+      req.body as CreateTicketInput;
+
+    const ticket =
+      await ticketService.create({
+        organizationId:
+          req.user.organizationId,
+
+        customerId:
+          req.user.id,
+
+        subject,
+
+        description,
+
+        priority,
+      });
+
+    res.status(201).json({
+      success: true,
+      data: ticket,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 async createReply(
   req: AuthRequest,
   res: Response,
