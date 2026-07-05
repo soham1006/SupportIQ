@@ -9,6 +9,7 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { Agent } from '@/features/agents/types';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   agent: Agent;
@@ -17,6 +18,13 @@ interface Props {
 export function AgentCard({
   agent,
 }: Props) {
+  const status = agent.isActive
+    ? 'ONLINE'
+    : 'OFFLINE';
+
+  const router = useRouter();
+
+
   return (
     <div className="rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
 
@@ -42,7 +50,7 @@ export function AgentCard({
             </h3>
 
             <p className="text-sm text-muted-foreground">
-              {agent.role}
+              Agent
             </p>
 
           </div>
@@ -51,29 +59,25 @@ export function AgentCard({
 
         <div className="flex items-center gap-2">
 
-  <span
-    className={`h-2.5 w-2.5 rounded-full ${
-      agent.status === 'ONLINE'
-        ? 'bg-emerald-500'
-        : agent.status === 'BUSY'
-        ? 'bg-yellow-500'
-        : 'bg-slate-400'
-    }`}
-  />
+          <span
+            className={`h-2.5 w-2.5 rounded-full ${
+              status === 'ONLINE'
+                ? 'bg-emerald-500'
+                : 'bg-slate-400'
+            }`}
+          />
 
-  <span
-    className={`text-sm font-medium ${
-      agent.status === 'ONLINE'
-        ? 'text-emerald-500'
-        : agent.status === 'BUSY'
-        ? 'text-yellow-500'
-        : 'text-slate-400'
-    }`}
-  >
-    {agent.status}
-  </span>
+          <span
+            className={`text-sm font-medium ${
+              status === 'ONLINE'
+                ? 'text-emerald-500'
+                : 'text-slate-400'
+            }`}
+          >
+            {status}
+          </span>
 
-</div>
+        </div>
 
       </div>
 
@@ -84,6 +88,35 @@ export function AgentCard({
         <Mail size={16} />
 
         {agent.email}
+
+      </div>
+
+      {/* Skills */}
+
+      <div className="mt-6">
+
+        <p className="mb-2 text-sm text-muted-foreground">
+          Skills
+        </p>
+
+        <div className="flex flex-wrap gap-2">
+
+          {agent.skills.length > 0 ? (
+            agent.skills.map(skill => (
+              <span
+                key={skill}
+                className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
+              >
+                {skill}
+              </span>
+            ))
+          ) : (
+            <span className="text-sm text-muted-foreground">
+              No skills added
+            </span>
+          )}
+
+        </div>
 
       </div>
 
@@ -101,13 +134,13 @@ export function AgentCard({
             />
 
             <span className="text-sm text-muted-foreground">
-              Active
+              Assigned
             </span>
 
           </div>
 
           <h4 className="mt-3 text-2xl font-bold">
-            {agent.activeTickets}
+            {agent._count.assignedTickets}
           </h4>
 
         </div>
@@ -115,36 +148,12 @@ export function AgentCard({
         <div className="rounded-xl bg-muted p-4">
 
           <p className="text-sm text-muted-foreground">
-            Resolved
+            Status
           </p>
 
-          <h4 className="mt-3 text-2xl font-bold">
-            {agent.resolvedTickets}
+          <h4 className="mt-3 text-lg font-bold">
+            {status}
           </h4>
-
-        </div>
-
-      </div>
-
-      {/* Satisfaction */}
-
-      <div className="mt-8">
-
-        <div className="mb-2 flex items-center justify-between">
-
-          <span className="text-sm text-muted-foreground">
-            Satisfaction
-          </span>
-
-          <span className="font-semibold text-primary">
-           {agent.satisfaction}%
-          </span>
-
-        </div>
-
-        <div className="h-2 rounded-full bg-muted">
-
-          <div className="h-full w-[98%] rounded-full bg-primary" />
 
         </div>
 
@@ -154,13 +163,18 @@ export function AgentCard({
 
       <div className="mt-8">
 
-        <Button className="w-full justify-center rounded-xl">
-
-          View Profile
-
-          <ArrowRight size={16} />
-
-        </Button>
+        <Button
+  className="w-full justify-center rounded-xl"
+  variant="outline"
+  onClick={() =>
+    router.push(
+      `/agents/${agent.id}`,
+    )
+  }
+>
+  View Profile
+  <ArrowRight size={16} />
+</Button>
 
       </div>
 

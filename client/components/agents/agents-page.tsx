@@ -1,9 +1,7 @@
 'use client';
 
-import { Plus } from 'lucide-react';
-
+import { CreateAgentDialog } from './create-agent-dialog';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
-import { Button } from '@/components/ui/button';
 import { useAgents } from '@/features/agents/use-agents';
 import { AgentStats } from './agent-stats';
 import { AgentCard } from './agent-card';
@@ -33,13 +31,7 @@ export function AgentsPage() {
 
           </div>
 
-          <Button>
-
-            <Plus size={18} />
-
-            Add Agent
-
-          </Button>
+          <CreateAgentDialog />
 
         </div>
 

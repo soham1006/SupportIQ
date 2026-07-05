@@ -1,23 +1,23 @@
 export interface Agent {
   id: string;
+
   name: string;
+
   email: string;
 
-  role: string;
+  skills: string[];
 
-  status:
-    | 'ONLINE'
-    | 'OFFLINE'
-    | 'BUSY';
+  isActive: boolean;
 
-  activeTickets: number;
+  createdAt: string;
 
-  resolvedTickets: number;
-
-  satisfaction: number;
+  _count: {
+    assignedTickets: number;
+  };
 }
 
 export interface GetAgentsResponse {
   success: boolean;
+
   data: Agent[];
 }

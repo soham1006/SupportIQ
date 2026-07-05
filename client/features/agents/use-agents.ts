@@ -1,16 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 
-import {api} from '@/lib/api';
+import { getAgents } from './api';
 
 export function useAgents() {
   return useQuery({
     queryKey: ['agents'],
 
-    queryFn: async () => {
-      const { data } =
-        await api.get('/agents');
-
-      return data;
-    },
+    queryFn: getAgents,
   });
 }

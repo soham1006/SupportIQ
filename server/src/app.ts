@@ -16,7 +16,7 @@ import {
   swaggerDocument,
 } from './config/swagger';
 import documentRoutes from './modules/documents/document.routes';
-
+import agentRoutes from './modules/agent/agent.routes';
 const app = express();
 
 app.use(
@@ -43,6 +43,10 @@ app.use(
 app.use(
   '/api/v1/documents',
   documentRoutes,
+);
+app.use(
+  '/api/v1/agents',
+  agentRoutes,
 );
 app.use(notFoundHandler);
 
