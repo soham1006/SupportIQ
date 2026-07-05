@@ -15,6 +15,13 @@ export class DashboardService {
     organizationId,
   );
 }
+async getRecentTickets(
+  organizationId: string,
+) {
+  return dashboardRepository.getRecentTickets(
+    organizationId,
+  );
+}
 }
 
 export const dashboardService =

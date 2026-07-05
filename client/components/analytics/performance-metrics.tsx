@@ -2,48 +2,52 @@
 
 import {
   Brain,
+  CheckCircle,
   Clock3,
-  Star,
   TrendingUp,
 } from 'lucide-react';
 
 import { Card } from '@/components/ui/card';
 
-const aiMetrics = [
-  {
-    label: 'AI Accuracy',
-    value: '94.2%',
-  },
-  {
-    label: 'Avg Confidence',
-    value: '91.7%',
-  },
-  {
-    label: 'Escalation Rate',
-    value: '6.1%',
-  },
-];
-
-const responseMetrics = [
-  {
-    label: 'First Response',
-    value: '38 sec',
-  },
-  {
-    label: 'Resolution Time',
-    value: '2h 14m',
-  },
-  {
-    label: 'Customer Rating',
-    value: '4.8 ★',
-  },
-];
+import { useOverview } from '@/features/analytics/use-overview';
 
 export function PerformanceMetrics() {
+  const { data, isLoading } =
+    useOverview();
+
+  if (isLoading) {
+    return (
+      <div className="grid gap-6 xl:grid-cols-2">
+        <Card className="h-80 animate-pulse" />
+        <Card className="h-80 animate-pulse" />
+      </div>
+    );
+  }
+
+  const aiMetrics = [
+    {
+      label: 'Average AI Confidence',
+      value: `${data?.data.averageAIConfidence ?? 0}%`,
+    },
+    {
+      label: 'Resolution Rate',
+      value: `${data?.data.resolutionRate ?? 0}%`,
+    },
+  ];
+
+  const ticketMetrics = [
+    {
+      label: 'Open Tickets',
+      value: data?.data.openTickets ?? 0,
+    },
+    {
+      label: 'Closed Tickets',
+      value: data?.data.closedTickets ?? 0,
+    },
+  ];
+
   return (
     <div className="grid gap-6 xl:grid-cols-2">
-
-      {/* AI Performance */}
 
       <Card className="p-6">
 
@@ -61,11 +65,11 @@ export function PerformanceMetrics() {
           <div>
 
             <h2 className="text-xl font-semibold">
-              AI Performance
+              AI Metrics
             </h2>
 
             <p className="text-sm text-muted-foreground">
-              Overall AI assistant quality
+              AI performance overview.
             </p>
 
           </div>
@@ -97,8 +101,6 @@ export function PerformanceMetrics() {
 
       </Card>
 
-      {/* Response Metrics */}
-
       <Card className="p-6">
 
         <div className="mb-6 flex items-center gap-3">
@@ -115,11 +117,11 @@ export function PerformanceMetrics() {
           <div>
 
             <h2 className="text-xl font-semibold">
-              Response Metrics
+              Ticket Metrics
             </h2>
 
             <p className="text-sm text-muted-foreground">
-              Customer support efficiency
+              Current support workload.
             </p>
 
           </div>
@@ -128,7 +130,7 @@ export function PerformanceMetrics() {
 
         <div className="space-y-5">
 
-          {responseMetrics.map(metric => (
+          {ticketMetrics.map(metric => (
 
             <div
               key={metric.label}
@@ -138,19 +140,13 @@ export function PerformanceMetrics() {
               <div className="flex items-center gap-2">
 
                 {metric.label ===
-                'First Response' ? (
+                'Open Tickets' ? (
                   <Clock3
                     size={16}
                     className="text-primary"
                   />
-                ) : metric.label ===
-                  'Customer Rating' ? (
-                  <Star
-                    size={16}
-                    className="text-primary"
-                  />
                 ) : (
-                  <TrendingUp
+                  <CheckCircle
                     size={16}
                     className="text-primary"
                   />

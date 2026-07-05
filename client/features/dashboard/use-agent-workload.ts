@@ -1,15 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getDashboardStats } from './api';
+import { getAgentWorkload } from './api';
 
-export function useDashboardStats() {
+export function useAgentWorkload() {
   return useQuery({
     queryKey: [
       'dashboard',
-      'stats',
+      'agents',
     ],
 
     queryFn:
-      getDashboardStats,
+      getAgentWorkload,
   });
 }

@@ -13,16 +13,18 @@ import { useDashboardStats } from '@/features/dashboard/use-dashboard-stats';
 import { RecentTickets } from "@/components/dashboard/recent-tickets";
 import { DashboardHero } from "@/components/dashboard/dashboard-hero";
 import { TicketChart } from "@/components/dashboard/ticket-chart";
-
+import { AgentWorkload } from '@/components/dashboard/agent-workload';
 
 export default function AdminDashboard() {
 const { data, isLoading } =
   useDashboardStats();
 
-  if (isLoading) {
+ if (isLoading) {
   return (
     <DashboardLayout>
-      Loading...
+      <div className="flex h-64 items-center justify-center text-muted-foreground">
+        Loading dashboard...
+      </div>
     </DashboardLayout>
   );
 }
@@ -34,35 +36,41 @@ const { data, isLoading } =
 
     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
 
-      <StatsCard
-        title="Total Tickets"
-        value={data?.data.totalTickets ?? 0}
-        icon={Ticket}
-      />
+  <StatsCard
+    title="Total Tickets"
+    value={data?.data.totalTickets ?? 0}
+    icon={Ticket}
+  />
 
-      <StatsCard
-        title="Open Tickets"
-        value={data?.data.openTickets ?? 0}
-        icon={Clock}
-      />
+  <StatsCard
+    title="Open Tickets"
+    value={data?.data.openTickets ?? 0}
+    icon={Clock}
+  />
 
-      <StatsCard
-        title="Resolved"
-        value={data?.data.resolvedTickets ?? 0}
-        icon={CheckCircle}
-      />
+  <StatsCard
+    title="Active Agents"
+    value={data?.data.totalAgents ?? 0}
+    icon={Users}
+  />
 
-      <StatsCard
-        title="Agents"
-        value={data?.data.totalAgents ?? 0}
-        icon={Users}
-      />
+  <StatsCard
+    title="Knowledge Docs"
+    value={data?.data.totalDocuments ?? 0}
+    icon={CheckCircle}
+  />
 
-    </div>
+</div>
 
     <TicketChart />
 
-    <RecentTickets />
+    <div className="grid gap-6 xl:grid-cols-2">
+
+  <RecentTickets />
+
+  <AgentWorkload />
+
+</div>
 
   </div>
 </DashboardLayout>

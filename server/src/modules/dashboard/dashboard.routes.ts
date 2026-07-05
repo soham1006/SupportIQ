@@ -18,5 +18,12 @@ router.get(
     dashboardController,
   ),
 );
+router.get(
+  '/recent-tickets',
+  authenticate,
+  dashboardController.getRecentTickets.bind(
+    dashboardController,
+  ),
+);
 
 export default router;

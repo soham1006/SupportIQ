@@ -12,16 +12,37 @@ import {
 
 import { Card } from '@/components/ui/card';
 
-const data = [
-  { month: 'Jan', tickets: 120 },
-  { month: 'Feb', tickets: 180 },
-  { month: 'Mar', tickets: 210 },
-  { month: 'Apr', tickets: 260 },
-  { month: 'May', tickets: 240 },
-  { month: 'Jun', tickets: 320 },
-];
+import { useTicketTrend } from '@/features/analytics/use-ticket-trend';
 
 export function TicketTrendChart() {
+  const {
+    data,
+    isLoading,
+  } = useTicketTrend();
+
+  if (isLoading) {
+    return (
+      <Card className="flex h-[400px] items-center justify-center">
+        Loading...
+      </Card>
+    );
+  }
+
+  const chartData =
+    data?.data.map(item => ({
+      date: new Date(
+        item.date,
+      ).toLocaleDateString(
+        'en-US',
+        {
+          month: 'short',
+          day: '2-digit',
+        },
+      ),
+
+      tickets: item.count,
+    })) ?? [];
+
   return (
     <Card className="p-6">
 
@@ -34,7 +55,9 @@ export function TicketTrendChart() {
         height={320}
       >
 
-        <AreaChart data={data}>
+        <AreaChart
+          data={chartData}
+        >
 
           <defs>
 
@@ -66,7 +89,9 @@ export function TicketTrendChart() {
             strokeDasharray="3 3"
           />
 
-          <XAxis dataKey="month" />
+          <XAxis
+            dataKey="date"
+          />
 
           <YAxis />
 

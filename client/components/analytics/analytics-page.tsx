@@ -4,9 +4,10 @@ import { DashboardLayout } from '@/components/layout/dashboard-layout';
 
 import { AnalyticsStats } from './analytics-stats';
 import { TicketTrendChart } from './ticket-trend-chart';
-import { CategoryChart } from './category-chart';
-import { RecentActivity } from './recent-activity';
+import { TicketStatusChart } from './ticket-status-chart';
 import { PerformanceMetrics } from './performance-metrics';
+import { TopPerformingAgents  } from './top-performing-agents.tsx';
+
 export function AnalyticsPage() {
   return (
     <DashboardLayout>
@@ -31,24 +32,15 @@ export function AnalyticsPage() {
 
           <TicketTrendChart />
 
-          <CategoryChart />
+          <TicketStatusChart />
 
         </div>
 
-        <RecentActivity />
+        <PerformanceMetrics />
+
+        <TopPerformingAgents  />
 
       </div>
-
-      <AnalyticsStats />
-
-<div className="grid gap-6 xl:grid-cols-2">
-  <TicketTrendChart />
-  <CategoryChart />
-</div>
-
-<PerformanceMetrics />
-
-<RecentActivity />
 
     </DashboardLayout>
   );

@@ -3,50 +3,65 @@
 import {
   Users,
   UserCheck,
+  UserX,
   Briefcase,
-  CheckCircle2,
 } from 'lucide-react';
 
 import { Card } from '@/components/ui/card';
 
-const stats = [
-  {
-    title: 'Total Agents',
-    value: 8,
-    icon: Users,
-  },
-  {
-    title: 'Online',
-    value: 6,
-    icon: UserCheck,
-  },
-  {
-    title: 'Busy',
-    value: 3,
-    icon: Briefcase,
-  },
-  {
-    title: 'Resolved Today',
-    value: 41,
-    icon: CheckCircle2,
-  },
-];
+import { useAgents } from '@/features/agents/use-agents';
 
 export function AgentStats() {
+  const { data, isLoading } =
+    useAgents();
+
+  const agents =
+    data?.data ?? [];
+
+  const stats = [
+    {
+      title: 'Total Agents',
+      value: agents.length,
+      icon: Users,
+    },
+    {
+      title: 'Active',
+      value: agents.filter(
+        agent => agent.isActive,
+      ).length,
+      icon: UserCheck,
+    },
+    {
+      title: 'Inactive',
+      value: agents.filter(
+        agent => !agent.isActive,
+      ).length,
+      icon: UserX,
+    },
+    {
+      title: 'Assigned Tickets',
+      value: agents.reduce(
+        (sum, agent) =>
+          sum +
+          agent._count
+            .assignedTickets,
+        0,
+      ),
+      icon: Briefcase,
+    },
+  ];
+
   return (
     <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
 
       {stats.map(stat => {
-
         const Icon = stat.icon;
 
         return (
-
           <Card
             key={stat.title}
             className="border-border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
           >
-
             <div className="flex items-center justify-between p-6">
 
               <div>
@@ -56,7 +71,9 @@ export function AgentStats() {
                 </p>
 
                 <h2 className="mt-3 text-3xl font-bold">
-                  {stat.value}
+                  {isLoading
+                    ? '--'
+                    : stat.value}
                 </h2>
 
               </div>
@@ -71,9 +88,7 @@ export function AgentStats() {
               </div>
 
             </div>
-
           </Card>
-
         );
       })}
 

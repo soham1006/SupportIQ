@@ -4,13 +4,14 @@ import {
   ArrowRight,
   Clock3,
 } from 'lucide-react';
-
+import { useRouter } from 'next/navigation';
 import { Card } from "@/components/ui/card";
-import { useTickets } from '@/features/tickets/use-tickets';
-import { StatusBadge } from './status-badge';
+import { useRecentTickets } from '@/features/dashboard/use-recent-tickets';import { StatusBadge } from './status-badge';
+import { Ticket } from '@/features/tickets/types';
 
 export function RecentTickets() {
-  const { data, isLoading } = useTickets();
+  const { data, isLoading } = useRecentTickets();
+  const router = useRouter();
 
   if (isLoading) {
     return (
@@ -44,15 +45,24 @@ export function RecentTickets() {
 
         </div>
 
-        <button className="rounded-2xl border border-slate-700 px-5 py-3 text-sm font-medium text-slate-300 transition hover:border-emerald-500 hover:text-white">
-          View All
-        </button>
+        <button
+  onClick={() =>
+    router.push('/tickets')
+  }
+  className="rounded-2xl border border-slate-700 px-5 py-3 text-sm font-medium text-slate-300 transition hover:border-emerald-500 hover:text-white"
+>
+
+  View All
+
+</button>
 
       </div>
 
       <div className="space-y-4">
 
-        {data?.data.map((ticket: any) => (
+        {data?.data
+  ?.slice(0, 3)
+  .map((ticket: Ticket) => (
 
           <div
             key={ticket.id}
@@ -113,13 +123,20 @@ export function RecentTickets() {
 
               </div>
 
-              <button className="flex items-center gap-2 rounded-xl border border-slate-700 px-4 py-2 text-sm text-slate-300 transition hover:border-emerald-500 hover:text-white">
+              <button
+  onClick={() =>
+    router.push(
+      `/tickets/${ticket.id}`,
+    )
+  }
+  className="flex items-center gap-2 rounded-xl border border-slate-700 px-4 py-2 text-sm text-slate-300 transition hover:border-emerald-500 hover:text-white"
+>
 
-                Open
+  Open
 
-                <ArrowRight size={16} />
+  <ArrowRight size={16} />
 
-              </button>
+</button>
 
             </div>
 

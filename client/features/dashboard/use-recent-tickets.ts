@@ -1,15 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getDashboardStats } from './api';
+import { getRecentTickets } from './api';
 
-export function useDashboardStats() {
+export function useRecentTickets() {
   return useQuery({
     queryKey: [
       'dashboard',
-      'stats',
+      'recent-tickets',
     ],
 
     queryFn:
-      getDashboardStats,
+      getRecentTickets,
   });
 }

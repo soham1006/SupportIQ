@@ -4,10 +4,10 @@ import {
 } from 'express';
 
 import { AuthRequest } from '../../shared/types/AuthRequest';
-import { dashboardService } from './dashboard.service';
+import { analyticsService } from './analytics.service';
 
-export class DashboardController {
-  async getStats(
+export class AnalyticsController {
+  async getOverview(
     req: AuthRequest,
     res: Response,
     next: NextFunction,
@@ -20,20 +20,74 @@ export class DashboardController {
         });
       }
 
-      const stats =
-        await dashboardService.getStats(
+      const overview =
+        await analyticsService.getOverview(
           req.user.organizationId,
         );
 
       res.json({
         success: true,
-        data: stats,
+        data: overview,
       });
     } catch (error) {
       next(error);
     }
   }
-  async getAgentWorkload(
+  async getTicketStatus(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Unauthorized',
+      });
+    }
+
+    const data =
+      await analyticsService.getTicketStatus(
+        req.user.organizationId,
+      );
+
+    res.json({
+      success: true,
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async getTicketTrend(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Unauthorized',
+      });
+    }
+
+    const trend =
+      await analyticsService.getTicketTrend(
+        req.user.organizationId,
+      );
+
+    res.json({
+      success: true,
+      data: trend,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async getTopAgents(
   req: AuthRequest,
   res: Response,
   next: NextFunction,
@@ -47,7 +101,7 @@ export class DashboardController {
     }
 
     const agents =
-      await dashboardService.getAgentWorkload(
+      await analyticsService.getTopAgents(
         req.user.organizationId,
       );
 
@@ -59,33 +113,8 @@ export class DashboardController {
     next(error);
   }
 }
-async getRecentTickets(
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction,
-) {
-  try {
-    if (!req.user) {
-      return res.status(401).json({
-        success: false,
-        message: 'Unauthorized',
-      });
-    }
 
-    const tickets =
-      await dashboardService.getRecentTickets(
-        req.user.organizationId,
-      );
-
-    res.json({
-      success: true,
-      data: tickets,
-    });
-  } catch (error) {
-    next(error);
-  }
-}
 }
 
-export const dashboardController =
-  new DashboardController();
+export const analyticsController =
+  new AnalyticsController();

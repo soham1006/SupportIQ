@@ -4,13 +4,16 @@ import { TicketStatus, UserRole } from '@prisma/client';
 export class DashboardRepository {
   async getStats(organizationId: string) {
     const [
-      totalTickets,
-      openTickets,
-      inProgressTickets,
-      resolvedTickets,
-      closedTickets,
-      totalAgents,
-    ] = await Promise.all([
+  totalTickets,
+  openTickets,
+  inProgressTickets,
+  resolvedTickets,
+  closedTickets,
+  totalAgents,
+  totalDocuments,
+  indexedDocuments,
+  processingDocuments,
+] = await Promise.all([
       prisma.ticket.count({
         where: {
           organizationId,
@@ -52,16 +55,42 @@ export class DashboardRepository {
           isActive: true,
         },
       }),
+
+      prisma.document.count({
+  where: {
+    organizationId,
+  },
+}),
+
+prisma.document.count({
+  where: {
+    organizationId,
+    status: 'READY',
+  },
+}),
+
+prisma.document.count({
+  where: {
+    organizationId,
+    status: 'PROCESSING',
+  },
+}),
+
     ]);
 
-    return {
-      totalTickets,
-      openTickets,
-      inProgressTickets,
-      resolvedTickets,
-      closedTickets,
-      totalAgents,
-    };
+   return {
+  totalTickets,
+  openTickets,
+  inProgressTickets,
+  resolvedTickets,
+  closedTickets,
+
+  totalAgents,
+
+  totalDocuments,
+  indexedDocuments,
+  processingDocuments,
+};
   }
   async getAgentWorkload(
   organizationId: string,
@@ -72,6 +101,14 @@ export class DashboardRepository {
       role: UserRole.AGENT,
       isActive: true,
     },
+
+     orderBy: {
+    assignedTickets: {
+      _count: 'desc',
+    },
+  },
+
+  take: 3,
 
     select: {
       id: true,
@@ -120,6 +157,30 @@ export class DashboardRepository {
 
       resolved,
     };
+  });
+}
+async getRecentTickets(
+  organizationId: string,
+) {
+  return prisma.ticket.findMany({
+    where: {
+      organizationId,
+    },
+
+    include: {
+      customer: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
+    },
+
+    orderBy: {
+      createdAt: 'desc',
+    },
+
+    take: 5,
   });
 }
 }

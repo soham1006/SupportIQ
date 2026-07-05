@@ -1,48 +1,74 @@
 'use client';
 
 import {
-  Brain,
+  FileText,
   Ticket,
-  Clock3,
+  Users,
   TrendingUp,
 } from 'lucide-react';
 
 import { Card } from '@/components/ui/card';
 
-const stats = [
-  {
-    title: 'Total Tickets',
-    value: '1,248',
-    icon: Ticket,
-    change: '+12%',
-  },
-  {
-    title: 'AI Accuracy',
-    value: '94%',
-    icon: Brain,
-    change: '+3%',
-  },
-  {
-    title: 'Avg Response',
-    value: '42 sec',
-    icon: Clock3,
-    change: '-18%',
-  },
-  {
-    title: 'Resolution Rate',
-    value: '91%',
-    icon: TrendingUp,
-    change: '+7%',
-  },
-];
+import { useOverview } from '@/features/analytics/use-overview';
 
 export function AnalyticsStats() {
+  const { data, isLoading } =
+    useOverview();
+
+  if (isLoading) {
+    return (
+      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+
+        {Array.from({
+          length: 4,
+        }).map((_, index) => (
+          <Card
+            key={index}
+            className="h-36 animate-pulse"
+          />
+        ))}
+
+      </div>
+    );
+  }
+
+  const stats = [
+    {
+      title: 'Total Tickets',
+      value:
+        data?.data.totalTickets ?? 0,
+      icon: Ticket,
+    },
+    {
+      title: 'Resolution Rate',
+      value: `${
+        data?.data
+          .resolutionRate ?? 0
+      }%`,
+      icon: TrendingUp,
+    },
+    {
+      title: 'Active Agents',
+      value:
+        data?.data.totalAgents ?? 0,
+      icon: Users,
+    },
+    {
+      title: 'Knowledge Documents',
+      value:
+        data?.data
+          .totalDocuments ?? 0,
+      icon: FileText,
+    },
+  ];
+
   return (
     <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
 
       {stats.map(stat => {
 
-        const Icon = stat.icon;
+        const Icon =
+          stat.icon;
 
         return (
 
@@ -63,10 +89,6 @@ export function AnalyticsStats() {
                   {stat.value}
                 </h2>
 
-                <p className="mt-2 text-sm font-medium text-emerald-500">
-                  {stat.change} this month
-                </p>
-
               </div>
 
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
@@ -83,7 +105,6 @@ export function AnalyticsStats() {
           </Card>
 
         );
-
       })}
 
     </div>

@@ -20,17 +20,52 @@ import {
   CardContent,
 } from '@/components/ui/card';
 
-const data = [
-  { day: 'Mon', tickets: 12 },
-  { day: 'Tue', tickets: 18 },
-  { day: 'Wed', tickets: 15 },
-  { day: 'Thu', tickets: 26 },
-  { day: 'Fri', tickets: 20 },
-  { day: 'Sat', tickets: 16 },
-  { day: 'Sun', tickets: 10 },
-];
+import { useDashboardStats } from '@/features/dashboard/use-dashboard-stats';
 
 export function TicketChart() {
+  const { data, isLoading } =
+    useDashboardStats();
+
+  if (isLoading) {
+    return (
+      <Card>
+
+        <CardContent className="flex h-[420px] items-center justify-center text-muted-foreground">
+
+          Loading chart...
+
+        </CardContent>
+
+      </Card>
+    );
+  }
+
+  const chartData = [
+    {
+      label: 'Open',
+      tickets:
+        data?.data.openTickets ?? 0,
+    },
+    {
+      label: 'In Progress',
+      tickets:
+        data?.data
+          .inProgressTickets ?? 0,
+    },
+    {
+      label: 'Resolved',
+      tickets:
+        data?.data
+          .resolvedTickets ?? 0,
+    },
+    {
+      label: 'Closed',
+      tickets:
+        data?.data
+          .closedTickets ?? 0,
+    },
+  ];
+
   return (
     <Card>
 
@@ -54,11 +89,11 @@ export function TicketChart() {
               <div>
 
                 <h2 className="text-2xl font-bold text-white">
-                  Ticket Activity
+                  Ticket Status
                 </h2>
 
                 <p className="text-sm text-slate-400">
-                  Support requests over the last 7 days
+                  Current ticket distribution
                 </p>
 
               </div>
@@ -75,7 +110,9 @@ export function TicketChart() {
             />
 
             <span className="text-sm font-medium text-emerald-300">
-              +18%
+
+              {data?.data.totalTickets ?? 0}
+
             </span>
 
           </div>
@@ -86,7 +123,10 @@ export function TicketChart() {
           width="100%"
           height={340}
         >
-          <AreaChart data={data}>
+
+          <AreaChart
+            data={chartData}
+          >
 
             <defs>
 
@@ -121,7 +161,7 @@ export function TicketChart() {
             />
 
             <XAxis
-              dataKey="day"
+              dataKey="label"
               tickLine={false}
               axisLine={false}
               stroke="#94a3b8"
@@ -135,13 +175,17 @@ export function TicketChart() {
 
             <Tooltip
               cursor={{
-                stroke: '#22c55e',
+                stroke:
+                  '#22c55e',
                 strokeWidth: 1,
               }}
               contentStyle={{
-                background: '#111827',
-                border: '1px solid #25314A',
-                borderRadius: '16px',
+                background:
+                  '#111827',
+                border:
+                  '1px solid #25314A',
+                borderRadius:
+                  '16px',
                 color: '#fff',
               }}
             />
