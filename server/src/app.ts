@@ -19,6 +19,8 @@ import documentRoutes from './modules/documents/document.routes';
 import agentRoutes from './modules/agent/agent.routes';
 const app = express();
 import analyticsRoutes from './modules/analytics/analytics.routes';
+import notificationRoutes from './modules/notification/notification.routes';
+
 
 app.use(
   cors({
@@ -53,6 +55,11 @@ app.use(
   '/api/v1/analytics',
   analyticsRoutes,
 );
+app.use(
+  '/api/v1/notifications',
+  notificationRoutes,
+);
+
 app.use(notFoundHandler);
 
 app.use(errorHandler);

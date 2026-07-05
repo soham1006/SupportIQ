@@ -41,10 +41,12 @@ enum MessageRole {
 }
 
 enum NotificationType {
-  INFO
-  SUCCESS
-  WARNING
-  ERROR
+  NEW_TICKET
+  TICKET_ASSIGNED
+  TICKET_RESOLVED
+  DOCUMENT_UPLOADED
+  AGENT_CREATED
+  AGENT_UPDATED
 }
 
 model Organization {

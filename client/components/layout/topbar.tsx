@@ -1,10 +1,11 @@
 'use client';
 
 import {
-  Bell,
   Menu,
   Search,
 } from 'lucide-react';
+
+import { NotificationBell } from './notification-bell';
 
 import { Input } from '@/components/ui/input';
 
@@ -74,13 +75,7 @@ export function Topbar() {
 
           {/* Notification */}
 
-          <button className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card transition hover:bg-muted">
-
-            <Bell size={18} />
-
-            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-emerald-500" />
-
-          </button>
+          <NotificationBell />
 
           {/* User */}
 
