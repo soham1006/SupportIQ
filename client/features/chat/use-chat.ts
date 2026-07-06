@@ -1,11 +1,9 @@
-'use client';
-
 import { useMutation } from '@tanstack/react-query';
 
-import { sendMessage } from '@/services/chat.service';
+import { askAI } from './api';
 
 export function useChat() {
   return useMutation({
-    mutationFn: sendMessage,
+    mutationFn: askAI,
   });
 }

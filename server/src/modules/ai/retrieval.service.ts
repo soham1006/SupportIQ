@@ -2,7 +2,7 @@ import { embeddingService } from './embedding.service';
 import { getCollection } from './chroma.service';
 
 export class RetrievalService {
-  async search(query: string, topK = 5) {
+  async search(query: string, topK = 3) {
     const embedding = await embeddingService.embed(query);
 
     const collection = await getCollection();

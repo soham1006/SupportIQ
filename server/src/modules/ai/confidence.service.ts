@@ -6,24 +6,26 @@ export class ConfidenceService {
       return 0;
     }
 
-    const average =
-      distances.reduce(
-        (sum, value) => sum + value,
-        0,
-      ) / distances.length;
+    const bestDistance =
+      Math.min(...distances);
 
     const confidence = Math.max(
       0,
-      Math.min(1, 1 - average),
+      Math.min(
+        1,
+        1 - bestDistance / 2,
+      ),
     );
 
-    return Number(confidence.toFixed(2));
+    return Number(
+      confidence.toFixed(2),
+    );
   }
 
   shouldEscalate(
     confidence: number,
-  ): boolean {
-    return confidence < 0.65;
+  ) {
+    return confidence < 0.5;
   }
 }
 

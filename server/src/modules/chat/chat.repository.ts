@@ -83,6 +83,44 @@ async saveAssistantMessage(
     content,
   );
 }
+
+async getConversations(
+  userId: string,
+) {
+  return prisma.conversation.findMany({
+    where: {
+      userId,
+    },
+
+    orderBy: {
+      updatedAt: 'desc',
+    },
+
+    include: {
+      messages: {
+        take: 1,
+
+        orderBy: {
+          createdAt: 'desc',
+        },
+      },
+    },
+  });
+}
+
+async getConversationMessages(
+  conversationId: string,
+) {
+  return prisma.message.findMany({
+    where: {
+      conversationId,
+    },
+
+    orderBy: {
+      createdAt: 'asc',
+    },
+  });
+}
 }
 
 export const chatRepository =
