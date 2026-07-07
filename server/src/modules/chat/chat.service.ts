@@ -2,9 +2,7 @@ import {
   NotificationType,
   TicketPriority,
 } from '@prisma/client';
-import { GoogleGenAI } from '@google/genai';
-
-import { env } from '../../config/env';
+import { geminiService } from '../ai/gemini.service';
 
 import { retrievalService } from '../ai/retrieval.service';
 import { promptService } from '../ai/prompt.service';
@@ -15,10 +13,6 @@ import { chatRepository } from './chat.repository';
 import { ticketRepository } from '../ticket/ticket.repository';
 import { assignmentService } from '../agent/assignment.service';
 import { notificationService } from '../notification/notification.service';
-
-const ai = new GoogleGenAI({
-  apiKey: env.GEMINI_API_KEY,
-});
 
 export class ChatService {
   async ask(
@@ -66,14 +60,47 @@ export class ChatService {
         history,
       );
 
-    const response =
-      await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-      });
+    let answer = '';
 
-    const answer =
-      response.text ?? '';
+    try {
+      answer =
+  await geminiService.generate(
+    prompt,
+  );
+    } catch (error: any) {
+      console.error(
+        'Gemini Error:',
+        error,
+      );
+
+      if (error?.status === 429) {
+        answer =
+          'The AI service is temporarily unavailable because the Gemini API quota has been exceeded. Please try again later.';
+      } else {
+        answer =
+          'Sorry, an unexpected AI error occurred. Please try again later.';
+      }
+
+      await chatRepository.saveAssistantMessage(
+        conversation.id,
+        answer,
+      );
+
+      return {
+        conversationId:
+          conversation.id,
+
+        answer,
+
+        confidence: 0,
+
+        shouldEscalate: false,
+
+        ticket: null,
+
+        sources: [],
+      };
+    }
 
     const confidence =
       confidenceService.calculate(
@@ -117,7 +144,6 @@ ${answer}`,
             confidence,
         });
 
-      // Notify assigned agent
       if (bestAgent) {
         ticket =
           await ticketRepository.assignAgent(
@@ -126,7 +152,8 @@ ${answer}`,
           );
 
         await notificationService.create({
-          userId: bestAgent.id,
+          userId:
+            bestAgent.id,
 
           title:
             'New AI Escalation',
@@ -174,23 +201,20 @@ ${answer}`,
   }
 
   async getConversations(
-  userId: string,
-) {
-  return chatRepository.getConversations(
-    userId,
-  );
-}
+    userId: string,
+  ) {
+    return chatRepository.getConversations(
+      userId,
+    );
+  }
 
-
-async getMessages(
-  conversationId: string,
-) {
-  return chatRepository.getConversationMessages(
-    conversationId,
-  );
-}
-
-
+  async getMessages(
+    conversationId: string,
+  ) {
+    return chatRepository.getConversationMessages(
+      conversationId,
+    );
+  }
 }
 
 export const chatService =

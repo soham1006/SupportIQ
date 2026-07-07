@@ -11,12 +11,14 @@ import {
   BarChart3,
 } from 'lucide-react';
 
+import { Sheet, SheetContent } from '@/components/ui/sheet';
+
 import { NavItem } from './nav-item';
+import { useSidebar } from './sidebar-context';
 
-export function Sidebar() {
+function SidebarContent() {
   return (
-    <aside className="hidden lg:flex h-screen w-62 shrink-0 flex-col border-r border-border bg-sidebar">
-
+    <>
       {/* Logo */}
 
       <div className="border-b border-border px-6 py-5">
@@ -83,10 +85,10 @@ export function Sidebar() {
         />
 
         <NavItem
-  href="/analytics"
-  label="Analytics"
-  icon={BarChart3}
-/>
+          href="/analytics"
+          label="Analytics"
+          icon={BarChart3}
+        />
 
         <NavItem
           href="/settings"
@@ -123,7 +125,43 @@ export function Sidebar() {
         </button>
 
       </div>
+    </>
+  );
+}
 
-    </aside>
+export function Sidebar() {
+  const {
+    open,
+    setOpen,
+  } = useSidebar();
+
+  return (
+    <>
+      {/* Desktop */}
+
+      <aside className="hidden h-screen w-64 shrink-0 flex-col border-r border-border bg-sidebar lg:flex">
+
+        <SidebarContent />
+
+      </aside>
+
+      {/* Mobile */}
+
+      <Sheet
+        open={open}
+        onOpenChange={setOpen}
+      >
+
+        <SheetContent
+  side="left"
+  className="w-72 p-0 [&>button]:hidden"
+>
+
+          <SidebarContent />
+
+        </SheetContent>
+
+      </Sheet>
+    </>
   );
 }

@@ -10,72 +10,87 @@ import {
   generateRefreshToken,
   verifyRefreshToken,
 } from './jwt';
+import { organizationRepository } from '../organization/organization.repository';
 
 export class AuthService {
   async register(data: RegisterInput) {
-    const existingUser = await authRepository.findUserByEmail(
+  const existingUser =
+    await authRepository.findUserByEmail(
       data.email,
     );
 
-    if (existingUser) {
-      throw new ApiError(
-  409,
-  'Email already exists',
-);
-    }
+  if (existingUser) {
+    throw new ApiError(
+      409,
+      'Email already exists',
+    );
+  }
 
-    const hashedPassword = await hashPassword(data.password);
+  const organization =
+    await organizationRepository.create(
+      data.organizationName,
+    );
 
-    const user = await authRepository.createUser({
+  const hashedPassword =
+    await hashPassword(
+      data.password,
+    );
+
+  const user =
+    await authRepository.createUser({
       name: data.name,
+
       email: data.email,
+
       password: hashedPassword,
-      role: UserRole.CUSTOMER,
+
+      role: UserRole.ADMIN,
 
       organization: {
         connect: {
-          id: data.organizationId,
+          id: organization.id,
         },
       },
     });
 
-    const payload = {
-      userId: user.id,
+  const payload = {
+    userId: user.id,
+    email: user.email,
+    role: user.role,
+  };
+
+  const accessToken =
+    generateAccessToken(payload);
+
+  const refreshToken =
+    generateRefreshToken(payload);
+
+  const expiresAt =
+    new Date();
+
+  expiresAt.setDate(
+    expiresAt.getDate() + 7,
+  );
+
+  await authRepository.saveRefreshToken(
+    user.id,
+    refreshToken,
+    expiresAt,
+  );
+
+  return {
+    user: {
+      id: user.id,
+      name: user.name,
       email: user.email,
       role: user.role,
-    };
+    },
 
-    const accessToken =
-      generateAccessToken(payload);
+    accessToken,
 
-    const refreshToken =
-      generateRefreshToken(payload);
-
-    const expiresAt = new Date();
-
-    expiresAt.setDate(
-      expiresAt.getDate() + 7,
-    );
-
-    await authRepository.saveRefreshToken(
-      user.id,
-      refreshToken,
-      expiresAt,
-    );
-
-    return {
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
-
-      accessToken,
-
-      refreshToken,
-    };
-  }
+    refreshToken,
+  };
+}
 
   async login(data: LoginInput) {
   const user = await authRepository.findUserByEmail(data.email);

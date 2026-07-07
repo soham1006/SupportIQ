@@ -1,3 +1,5 @@
-export default function AgentDashboard() {
-  return <h1>Agent Dashboard</h1>;
+import { AgentDashboard } from '@/features/agent/agent-dashboard';
+
+export default function Page() {
+  return <AgentDashboard />;
 }

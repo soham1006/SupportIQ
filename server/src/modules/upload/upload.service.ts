@@ -73,9 +73,10 @@ if (embeddings.length > 0) {
     embeddings[0].length,
   );
 }
-
-            await vectorService.store(
+await vectorService.store(
   document.id,
+  document.originalName,
+  organizationId,
   chunks,
   embeddings,
 );

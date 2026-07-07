@@ -2,7 +2,6 @@
 
 import {
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -30,42 +29,21 @@ export function ChatWindow({
   const [question, setQuestion] =
     useState('');
 
-  const [
-    optimisticMessages,
-    setOptimisticMessages,
-  ] = useState<any[]>([]);
-
   const bottomRef =
     useRef<HTMLDivElement>(null);
 
-  const { data } =
-    useMessages(
-      conversationId,
-    );
+  const {
+    data,
+    isLoading,
+  } = useMessages(
+    conversationId,
+  );
 
   const chat =
     useChat();
 
-  const serverMessages =
-    data?.data ?? [];
-
   const messages =
-    useMemo(() => {
-      if (!conversationId) {
-        return optimisticMessages;
-      }
-
-
-      return [
-        ...serverMessages,
-        ...optimisticMessages,
-      ];
-    }, [
-      conversationId,
-      serverMessages,
-      optimisticMessages,
-    ]);
-
+    data?.data ?? [];
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({
@@ -89,17 +67,6 @@ export function ChatWindow({
 
     setQuestion('');
 
-    setOptimisticMessages(
-      prev => [
-        ...prev,
-        {
-          role: 'USER',
-          content:
-            currentQuestion,
-        },
-      ],
-    );
-
     try {
       const response =
         await chat.mutateAsync({
@@ -108,36 +75,6 @@ export function ChatWindow({
 
           conversationId,
         });
-
-      setOptimisticMessages(
-        prev => [
-          ...prev,
-          {
-            role:
-              'ASSISTANT',
-
-            content:
-              response.data
-                .answer,
-
-            confidence:
-              response.data
-                .confidence,
-
-            sources:
-              response.data
-                .sources,
-
-            shouldEscalate:
-              response.data
-                .shouldEscalate,
-
-            ticket:
-              response.data
-                .ticket,
-          },
-        ],
-      );
 
       if (
         !conversationId
@@ -149,24 +86,13 @@ export function ChatWindow({
       }
     } catch (error) {
       console.error(error);
-
-      setOptimisticMessages(
-        prev => [
-          ...prev,
-          {
-            role:
-              'ASSISTANT',
-
-            content:
-              'Sorry, something went wrong. Please try again.',
-          },
-        ],
-      );
     }
   }
 
   return (
     <div className="flex h-full min-h-0 flex-col">
+
+      {/* Header */}
 
       <div className="border-b border-border p-6">
 
@@ -181,10 +107,14 @@ export function ChatWindow({
 
       </div>
 
-      <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-6">
+      {/* Messages */}
 
-        {messages.length ===
-          0 && (
+      <div className="min-h-0 flex-1 overflow-y-auto p-6">
+
+        {isLoading ? (
+          <TypingIndicator />
+        ) : messages.length ===
+          0 ? (
           <div className="flex h-full flex-col items-center justify-center text-center">
 
             <Bot
@@ -204,27 +134,40 @@ export function ChatWindow({
             </p>
 
           </div>
-        )}
+        ) : (
+          <div className="space-y-4">
 
-        {messages.map(
-          (
-            message,
-            index,
-          ) => (
-            <MessageBubble
-              key={index}
-              message={message}
+            {messages.map(
+              (
+                message,
+                index,
+              ) => (
+                <MessageBubble
+                  key={
+                    message.id ??
+                    index
+                  }
+                  message={
+                    message
+                  }
+                />
+              ),
+            )}
+
+            {chat.isPending && (
+              <TypingIndicator />
+            )}
+
+            <div
+              ref={bottomRef}
             />
-          ),
-        )}
 
-        {chat.isPending && (
-          <TypingIndicator />
+          </div>
         )}
-
-        <div ref={bottomRef} />
 
       </div>
+
+      {/* Input */}
 
       <div className="border-t border-border p-5">
 

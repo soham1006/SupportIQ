@@ -19,8 +19,10 @@ export const registerSchema = z.object({
         .string()
         .min(8, 'Password must be at least 8 characters')
         .max(100),
-
-      organizationId: z.string().cuid(),
+organizationName: z
+  .string()
+  .min(2, 'Organization name is required')
+  .max(100)
     })
     .strict(),
 });

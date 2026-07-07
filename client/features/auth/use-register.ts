@@ -1,14 +1,14 @@
 import { useMutation } from '@tanstack/react-query';
 
 import {
-  login,
-  LoginData,
+  register,
+  RegisterData,
 } from './api';
 
-export function useLogin() {
+export function useRegister() {
   return useMutation({
     mutationFn: (
-      data: LoginData,
-    ) => login(data),
+      data: RegisterData,
+    ) => register(data),
   });
 }
