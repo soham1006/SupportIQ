@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-
+import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -49,22 +49,34 @@ const [
     resolver: zodResolver(registerSchema),
   });
 
-  async function onSubmit(
-    data: RegisterFormData,
-  ) {
-    try {
-      const {
-  confirmPassword,
-  ...payload
-} = data;
+ async function onSubmit(
+  data: RegisterFormData,
+) {
+  try {
+    const {
+      confirmPassword,
+      ...payload
+    } = data;
 
-await register.mutateAsync(payload);
+    await register.mutateAsync(
+      payload,
+    );
 
-      router.push('/login');
-    } catch (error) {
-      console.error(error);
-    }
+    toast.success(
+      'Workspace created successfully!'
+    );
+
+    router.push('/login');
+
+  } catch (error: any) {
+    console.error(error);
+
+    toast.error(
+      error?.response?.data?.message ??
+      'Registration failed.'
+    );
   }
+}
 
   return (
     <main className="min-h-screen bg-background">

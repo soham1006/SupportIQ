@@ -17,6 +17,7 @@ const app = express();
 import analyticsRoutes from "./modules/analytics/analytics.routes";
 import notificationRoutes from "./modules/notification/notification.routes";
 import chatRoutes from "./modules/chat/chat.routes";
+import customerRoutes from './modules/customer/customer.routes';
 
 app.use(
   cors({
@@ -39,6 +40,10 @@ app.use("/api/v1/agents", agentRoutes);
 app.use("/api/v1/analytics", analyticsRoutes);
 app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/chat", chatRoutes);
+app.use(
+  '/api/v1/customers',
+  customerRoutes,
+);
 
 app.use(notFoundHandler);
 

@@ -108,30 +108,33 @@ export class AgentRepository {
   });
 }
 
-  async create(data: {
-    name: string;
-    email: string;
-    password: string;
-    skills: string[];
-    organizationId: string;
-  }) {
-    return prisma.user.create({
-      data: {
-        name: data.name,
+async create(data: {
+  name: string;
+  email: string;
+  password: string;
+  skills: string[];
+  organizationId: string;
+}) {
+  return prisma.user.create({
+    data: {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      skills: data.skills,
+      organizationId: data.organizationId,
+      role: UserRole.AGENT,
+    },
 
-        email: data.email,
-
-        password: data.password,
-
-        skills: data.skills,
-
-        organizationId:
-          data.organizationId,
-
-        role: UserRole.AGENT,
-      },
-    });
-  }
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      skills: true,
+      isActive: true,
+      createdAt: true,
+    },
+  });
+}
 
   async update(
     id: string,
@@ -169,6 +172,13 @@ export class AgentRepository {
       },
     });
   }
+  async findByEmail(email: string) {
+  return prisma.user.findUnique({
+    where: {
+      email,
+    },
+  });
+}
 }
 
 export const agentRepository =

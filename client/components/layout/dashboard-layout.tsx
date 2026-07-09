@@ -3,6 +3,7 @@
 import { Sidebar } from './sidebar';
 import { Topbar } from './topbar';
 import { SidebarProvider } from './sidebar-context';
+import { AuthGuard } from '@/components/auth/auth-guard';
 
 interface Props {
   children: React.ReactNode;
@@ -12,6 +13,7 @@ export function DashboardLayout({
   children,
 }: Props) {
   return (
+      <AuthGuard>
     <SidebarProvider>
 
       <div className="flex h-screen overflow-hidden bg-background text-foreground">
@@ -49,5 +51,6 @@ export function DashboardLayout({
       </div>
 
     </SidebarProvider>
+    </AuthGuard>
   );
 }

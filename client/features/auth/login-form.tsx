@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-
+import { useAuth } from './use-auth';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -33,7 +33,8 @@ import { toast } from 'sonner';
 export function LoginForm() {
   const router = useRouter();
 
-  const login = useLogin();
+  const loginMutation = useLogin();
+  const { login } = useAuth();
 
   const [showPassword, setShowPassword] =
     useState(false);
@@ -51,12 +52,12 @@ export function LoginForm() {
   ) {
     try {
       const response =
-        await login.mutateAsync(data);
+  await loginMutation.mutateAsync(data);
 
-      localStorage.setItem(
-        'accessToken',
-        response.data.accessToken,
-      );
+      login(
+  response.data.user,
+  response.data.accessToken,
+);
 
       toast.success(
         'Login successful!',
@@ -67,7 +68,6 @@ export function LoginForm() {
 
       switch (role) {
         case 'ADMIN':
-        case 'SUPER_ADMIN':
           router.push(
             '/dashboard/admin',
           );
@@ -151,6 +151,7 @@ export function LoginForm() {
         <div className="flex items-center justify-center p-6">
 
           <Card className="w-full max-w-md p-8 shadow-xl">
+
 
             <h2 className="text-3xl font-bold">
               Welcome Back
@@ -243,10 +244,10 @@ export function LoginForm() {
                 type="submit"
                 className="w-full"
                 disabled={
-                  login.isPending
+                  loginMutation.isPending
                 }
               >
-                {login.isPending
+                {loginMutation.isPending
                   ? 'Signing In...'
                   : 'Login'}
               </Button>

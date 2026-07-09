@@ -1,13 +1,27 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, Sparkles } from 'lucide-react';
+
+import {
+  ArrowRight,
+  Sparkles,
+} from 'lucide-react';
+
+import { useAuth } from '@/features/auth/use-auth';
 
 export function Hero() {
+  const { user } =
+    useAuth();
+
+  const dashboardHref =
+    user?.role === 'ADMIN'
+      ? '/dashboard/admin'
+      : user?.role === 'AGENT'
+      ? '/dashboard/agent'
+      : '/dashboard/customer';
+
   return (
     <section className="relative overflow-hidden">
-
-      {/* Background */}
 
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.12),transparent_55%)]" />
 
@@ -43,25 +57,34 @@ export function Hero() {
 
         <div className="mt-10 flex flex-col gap-4 sm:flex-row">
 
-          <Link
-            href="/register"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-7 py-4 text-lg font-semibold text-white transition hover:bg-emerald-700"
-          >
+          {user ? (
+            <Link
+              href={dashboardHref}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-7 py-4 text-lg font-semibold text-white transition hover:bg-emerald-700"
+            >
+              Go to Dashboard
 
-            Get Started
+              <ArrowRight size={18} />
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/register"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-7 py-4 text-lg font-semibold text-white transition hover:bg-emerald-700"
+              >
+                Get Started
 
-            <ArrowRight size={18} />
+                <ArrowRight size={18} />
+              </Link>
 
-          </Link>
-
-          <Link
-            href="/login"
-            className="inline-flex items-center justify-center rounded-xl border border-border px-7 py-4 text-lg transition hover:bg-muted"
-          >
-
-            Login
-
-          </Link>
+              <Link
+                href="/login"
+                className="inline-flex items-center justify-center rounded-xl border border-border px-7 py-4 text-lg transition hover:bg-muted"
+              >
+                Login
+              </Link>
+            </>
+          )}
 
         </div>
 

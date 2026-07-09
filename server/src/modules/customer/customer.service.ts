@@ -1,13 +1,13 @@
-import { agentRepository } from './agent.repository';
-
 import { hashPassword } from '../auth/auth.utils';
 import { ApiError } from '../../utils/ApiError';
 
-export class AgentService {
+import { customerRepository } from './customer.repository';
+
+export class CustomerService {
   async getAll(
     organizationId: string,
   ) {
-    return agentRepository.findAll(
+    return customerRepository.findAll(
       organizationId,
     );
   }
@@ -16,7 +16,7 @@ export class AgentService {
     id: string,
     organizationId: string,
   ) {
-    return agentRepository.findById(
+    return customerRepository.findById(
       id,
       organizationId,
     );
@@ -26,18 +26,17 @@ export class AgentService {
     name: string;
     email: string;
     password: string;
-    skills: string[];
     organizationId: string;
   }) {
     const existing =
-      await agentRepository.findByEmail(
+      await customerRepository.findByEmail(
         data.email,
       );
 
     if (existing) {
       throw new ApiError(
         409,
-        'Agent already exists',
+        'Customer already exists',
       );
     }
 
@@ -46,7 +45,7 @@ export class AgentService {
         data.password,
       );
 
-    return agentRepository.create({
+    return customerRepository.create({
       ...data,
       password,
     });
@@ -57,24 +56,23 @@ export class AgentService {
     organizationId: string,
     data: {
       name?: string;
-      skills?: string[];
       isActive?: boolean;
     },
   ) {
-    const agent =
-      await agentRepository.findById(
+    const customer =
+      await customerRepository.findById(
         id,
         organizationId,
       );
 
-    if (!agent) {
+    if (!customer) {
       throw new ApiError(
         404,
-        'Agent not found',
+        'Customer not found',
       );
     }
 
-    return agentRepository.update(
+    return customerRepository.update(
       id,
       organizationId,
       data,
@@ -85,25 +83,25 @@ export class AgentService {
     id: string,
     organizationId: string,
   ) {
-    const agent =
-      await agentRepository.findById(
+    const customer =
+      await customerRepository.findById(
         id,
         organizationId,
       );
 
-    if (!agent) {
+    if (!customer) {
       throw new ApiError(
         404,
-        'Agent not found',
+        'Customer not found',
       );
     }
 
-    return agentRepository.delete(
+    return customerRepository.delete(
       id,
       organizationId,
     );
   }
 }
 
-export const agentService =
-  new AgentService();
+export const customerService =
+  new CustomerService();

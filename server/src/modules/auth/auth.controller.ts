@@ -90,20 +90,33 @@ async logout(
   next: NextFunction,
 ): Promise<void> {
   try {
-    const refreshToken = req.cookies.refreshToken;
+    const refreshToken =
+      req.cookies.refreshToken;
 
-    await authService.logout(refreshToken);
+    await authService.logout(
+      refreshToken,
+    );
+
+    res.clearCookie(
+      'refreshToken',
+      {
+        httpOnly: true,
+        secure:
+          process.env.NODE_ENV ===
+          'production',
+        sameSite: 'strict',
+      },
+    );
 
     res.status(200).json({
       success: true,
       message: 'Logout successful',
     });
+
   } catch (error) {
     next(error);
   }
-  res.clearCookie('refreshToken');
 }
-
 async me(
   req: AuthRequest,
   res: Response,
