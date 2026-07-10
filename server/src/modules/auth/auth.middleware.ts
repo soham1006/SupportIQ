@@ -35,8 +35,9 @@ export const authenticate = async (
       throw new ApiError(403, 'Account is disabled');
     }
 
-    req.user = {
+   req.user = {
   id: user.id,
+  name: user.name,
   email: user.email,
   role: user.role,
   organizationId: user.organizationId,

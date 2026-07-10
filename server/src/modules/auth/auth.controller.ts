@@ -1,6 +1,12 @@
-import { NextFunction, Request, Response } from 'express';
+import {
+  NextFunction,
+  Request,
+  Response,
+} from 'express';
+
 import { authService } from './auth.service';
 import { AuthRequest } from '../../shared/types/AuthRequest';
+import { ApiError } from '../../utils/ApiError';
 
 export class AuthController {
   async register(
@@ -9,22 +15,38 @@ export class AuthController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const result = await authService.register(req.body);
+      const result =
+        await authService.register(
+          req.body,
+        );
 
-      res.cookie('refreshToken', result.refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
+      res.cookie(
+        'refreshToken',
+        result.refreshToken,
+        {
+          httpOnly: true,
+          secure:
+            process.env.NODE_ENV ===
+            'production',
+          sameSite: 'strict',
+          maxAge:
+            7 *
+            24 *
+            60 *
+            60 *
+            1000,
+        },
+      );
 
       res.status(201).json({
         success: true,
-        message: 'User registered successfully',
-       data: {
-                user: result.user,
-                accessToken: result.accessToken,
-              },
+        message:
+          'User registered successfully',
+        data: {
+          user: result.user,
+          accessToken:
+            result.accessToken,
+        },
       });
     } catch (error) {
       next(error);
@@ -32,102 +54,130 @@ export class AuthController {
   }
 
   async login(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> {
-  try {
-    const result = await authService.login(req.body);
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const result =
+        await authService.login(
+          req.body,
+        );
 
-    res.cookie('refreshToken', result.refreshToken, {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'strict',
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-});
+      res.cookie(
+        'refreshToken',
+        result.refreshToken,
+        {
+          httpOnly: true,
+          secure:
+            process.env.NODE_ENV ===
+            'production',
+          sameSite: 'strict',
+          maxAge:
+            7 *
+            24 *
+            60 *
+            60 *
+            1000,
+        },
+      );
 
-    res.status(200).json({
-      success: true,
-      message: 'Login successful',
-      data: {
-  user: result.user,
-  accessToken: result.accessToken,
-},
-    });
-  } catch (error) {
-    next(error);
+      res.status(200).json({
+        success: true,
+        message:
+          'Login successful',
+        data: {
+          user: result.user,
+          accessToken:
+            result.accessToken,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
   }
-}
 
-async refresh(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> {
+  async refresh(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const refreshToken =
+        req.cookies.refreshToken;
 
-  try {
+      if (!refreshToken) {
+        throw new ApiError(
+          401,
+          'Refresh token missing',
+        );
+      }
 
-    const refreshToken = req.cookies.refreshToken;
+      const result =
+        await authService.refresh(
+          refreshToken,
+        );
 
-    const result =
-      await authService.refresh(
+      res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async logout(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const refreshToken =
+        req.cookies.refreshToken;
+
+      if (!refreshToken) {
+        throw new ApiError(
+          401,
+          'Refresh token missing',
+        );
+      }
+
+      await authService.logout(
         refreshToken,
       );
 
-    res.status(200).json({
-      success: true,
-      data: result,
-    });
+      res.clearCookie(
+        'refreshToken',
+        {
+          httpOnly: true,
+          secure:
+            process.env.NODE_ENV ===
+            'production',
+          sameSite: 'strict',
+        },
+      );
 
-  } catch (error) {
-    next(error);
+      res.status(200).json({
+        success: true,
+        message:
+          'Logout successful',
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 
-}
-async logout(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Promise<void> {
-  try {
-    const refreshToken =
-      req.cookies.refreshToken;
-
-    await authService.logout(
-      refreshToken,
-    );
-
-    res.clearCookie(
-      'refreshToken',
-      {
-        httpOnly: true,
-        secure:
-          process.env.NODE_ENV ===
-          'production',
-        sameSite: 'strict',
-      },
-    );
-
+  async me(
+    req: AuthRequest,
+    res: Response,
+  ): Promise<void> {
     res.status(200).json({
       success: true,
-      message: 'Logout successful',
+      data: req.user,
     });
-
-  } catch (error) {
-    next(error);
   }
 }
-async me(
-  req: AuthRequest,
-  res: Response,
-): Promise<void> {
 
-  res.status(200).json({
-    success: true,
-    data: req.user,
-  });
-
-}
-}
-
-export const authController = new AuthController();
+export const authController =
+  new AuthController();

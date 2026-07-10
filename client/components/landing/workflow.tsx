@@ -13,31 +13,31 @@ const steps = [
     icon: Upload,
     title: 'Upload Documents',
     description:
-      'Upload PDFs, manuals and company knowledge.',
+      'Import PDFs, manuals and company knowledge into SupportIQ.',
   },
   {
     icon: Brain,
-    title: 'AI Indexes Everything',
+    title: 'AI Builds Knowledge',
     description:
-      'SupportIQ builds a searchable vector knowledge base.',
+      'Documents are indexed into a searchable vector knowledge base.',
   },
   {
     icon: MessageSquare,
-    title: 'Customer Asks',
+    title: 'Customers Ask',
     description:
       'Customers chat naturally with the AI assistant.',
   },
   {
     icon: Ticket,
-    title: 'Low Confidence?',
+    title: 'Automatic Escalation',
     description:
-      'SupportIQ automatically creates a support ticket.',
+      'Low-confidence conversations become support tickets.',
   },
   {
     icon: Users,
-    title: 'Assign Best Agent',
+    title: 'Agent Resolution',
     description:
-      'The most suitable agent receives the ticket instantly.',
+      'The right support agent receives and resolves the request.',
   },
 ];
 
@@ -45,69 +45,144 @@ export function Workflow() {
   return (
     <section
       id="workflow"
-      className="bg-muted/30 py-24"
+      className="py-28"
     >
       <div className="mx-auto max-w-7xl px-6">
 
-        <div className="mb-16 text-center">
+        {/* Heading */}
 
-          <h2 className="text-4xl font-bold">
+        <div className="mx-auto mb-20 max-w-3xl text-center">
 
+          <h2 className="text-4xl font-semibold tracking-tight md:text-5xl">
             How SupportIQ Works
-
           </h2>
 
-          <p className="mt-4 text-lg text-muted-foreground">
-
-            AI handles repetitive questions while your team focuses on complex issues.
-
+          <p className="mt-5 text-lg leading-8 text-muted-foreground">
+            AI resolves repetitive questions automatically while your support
+            team focuses on conversations that truly need a human.
           </p>
 
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-5">
+        {/* Timeline */}
+
+        <div className="grid gap-8 lg:grid-cols-5">
 
           {steps.map((step, index) => {
+
             const Icon = step.icon;
 
             return (
+
               <div
                 key={step.title}
-                className="relative rounded-2xl border bg-card p-6 text-center shadow-sm"
+                className="relative"
               >
 
-                <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10">
+                {/* Connector */}
 
-                  <Icon
-                    size={30}
-                    className="text-emerald-500"
+                {index !== steps.length - 1 && (
+
+                  <div
+                    className="
+                    absolute
+
+                    left-[calc(50%+2rem)]
+                    top-8
+
+                    hidden
+
+                    h-px
+                    w-full
+
+                    bg-border
+
+                    lg:block
+                    "
                   />
+
+                )}
+
+                <div
+                  className="
+                  relative
+
+                  h-full
+
+                  rounded-3xl
+
+                  border
+                  border-border
+
+                  bg-card
+
+                  p-7
+
+                  shadow-sm
+
+                  transition-all
+                  duration-300
+
+                  hover:-translate-y-1
+                  hover:shadow-lg
+                  "
+                >
+
+                  {/* Step */}
+
+                  <div className="mb-6 flex items-center justify-between">
+
+                    <div
+                      className="
+                      flex
+
+                      h-14
+                      w-14
+
+                      items-center
+                      justify-center
+
+                      rounded-2xl
+
+                      bg-primary/10
+                      "
+                    >
+
+                      <Icon
+                        size={24}
+                        className="text-primary"
+                      />
+
+                    </div>
+
+                    <span
+                      className="
+                      text-sm
+
+                      font-semibold
+
+                      text-muted-foreground
+                      "
+                    >
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+
+                  </div>
+
+                  <h3 className="text-lg font-semibold tracking-tight">
+                    {step.title}
+                  </h3>
+
+                  <p className="mt-3 leading-7 text-muted-foreground">
+                    {step.description}
+                  </p>
 
                 </div>
 
-                <h3 className="text-lg font-semibold">
-
-                  {step.title}
-
-                </h3>
-
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">
-
-                  {step.description}
-
-                </p>
-
-                {index !==
-                  steps.length - 1 && (
-                  <div className="absolute right-[-22px] top-1/2 hidden -translate-y-1/2 text-3xl text-emerald-500 xl:block">
-
-                    →
-
-                  </div>
-                )}
-
               </div>
+
             );
+
           })}
 
         </div>

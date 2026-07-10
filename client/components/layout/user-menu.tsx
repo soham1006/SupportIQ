@@ -1,42 +1,117 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import {
   Bell,
   LogOut,
   Settings,
+  Shield,
   User,
 } from 'lucide-react';
+
+import { toast } from 'sonner';
+
+import { useAuth } from '@/features/auth/use-auth';
 
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
 export function UserMenu() {
+  const router = useRouter();
+
+  const {
+    user,
+    logout,
+  } = useAuth();
+
+  async function handleLogout() {
+    await logout();
+
+    toast.success('Logged out successfully');
+
+    router.replace('/');
+  }
+
+  const initials =
+    user?.name
+      ?.split(' ')
+      .map((word) => word[0])
+      .join('')
+      .toUpperCase() ?? '?';
+
   return (
     <DropdownMenu>
 
       <DropdownMenuTrigger asChild>
 
-        <button className="flex items-center gap-3 rounded-xl border border-border bg-card px-3 py-2 transition hover:bg-muted">
+        <button
+          className="
+          flex
+          items-center
+          gap-3
 
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500 font-semibold text-white">
+          rounded-2xl
 
-            S
+          border
+          border-border
+
+          bg-card
+
+          px-3
+          py-2
+
+          transition-all
+          duration-200
+
+          hover:border-primary/20
+          hover:bg-accent
+          "
+        >
+
+          <div
+            className="
+            flex
+
+            h-10
+            w-10
+
+            items-center
+            justify-center
+
+            rounded-full
+
+            bg-primary
+
+            text-sm
+            font-semibold
+
+            text-primary-foreground
+            "
+          >
+
+            {initials}
 
           </div>
 
           <div className="hidden text-left xl:block">
 
             <p className="text-sm font-medium">
-              Soham
+
+              {user?.name}
+
             </p>
 
-            <p className="text-xs text-muted-foreground">
-              Admin
+            <p className="text-xs capitalize text-muted-foreground">
+
+              {user?.role?.toLowerCase()}
+
             </p>
 
           </div>
@@ -47,30 +122,105 @@ export function UserMenu() {
 
       <DropdownMenuContent
         align="end"
-        className="w-56"
+        className="w-72"
       >
 
-        <DropdownMenuItem>
+        {/* User Header */}
 
-          <User size={16} />
+        <DropdownMenuLabel className="p-4">
 
-          <span>Profile</span>
+          <div className="flex items-center gap-3">
+
+            <div
+              className="
+              flex
+              h-12
+              w-12
+              items-center
+              justify-center
+
+              rounded-full
+
+              bg-primary
+
+              text-base
+              font-semibold
+
+              text-primary-foreground
+              "
+            >
+
+              {initials}
+
+            </div>
+
+            <div>
+
+              <p className="font-semibold">
+
+                {user?.name}
+
+              </p>
+
+              <p className="text-sm text-muted-foreground">
+
+                {user?.email}
+
+              </p>
+
+            </div>
+
+          </div>
+
+        </DropdownMenuLabel>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem
+          onClick={() =>
+            router.push('/profile')
+          }
+        >
+
+          <User size={17} />
+
+          Profile
 
         </DropdownMenuItem>
 
-        <DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() =>
+            router.push(
+              user?.role === 'ADMIN'
+                ? '/settings'
+                : '/profile',
+            )
+          }
+        >
 
-          <Settings size={16} />
+          <Settings size={17} />
 
-          <span>Settings</span>
+          Settings
 
         </DropdownMenuItem>
 
-        <DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() =>
+            router.push('/notifications')
+          }
+        >
 
-          <Bell size={16} />
+          <Bell size={17} />
 
-          <span>Notifications</span>
+          Notifications
+
+        </DropdownMenuItem>
+
+        <DropdownMenuItem disabled>
+
+          <Shield size={17} />
+
+          {user?.role}
 
         </DropdownMenuItem>
 
@@ -78,16 +228,12 @@ export function UserMenu() {
 
         <DropdownMenuItem
           variant="destructive"
-          onClick={() =>
-            console.log(
-              'Logout',
-            )
-          }
+          onClick={handleLogout}
         >
 
-          <LogOut size={16} />
+          <LogOut size={17} />
 
-          <span>Logout</span>
+          Logout
 
         </DropdownMenuItem>
 

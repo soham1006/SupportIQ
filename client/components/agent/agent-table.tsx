@@ -134,7 +134,7 @@ const [
     setSelectedAgent(agent);
     setOpen(true);
   }}
-  className="mr-3 text-blue-600 hover:underline"
+  className="mr-3 text-primary-500 hover:underline"
 >
   Edit
 </button>

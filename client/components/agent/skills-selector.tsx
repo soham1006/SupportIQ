@@ -66,7 +66,7 @@ export function SkillsSelector({
 
             ${
               value.includes(skill)
-                ? 'border-emerald-600 bg-emerald-600 text-white'
+                ? 'border-emerald-600 bg-primary-500 text-white'
                 : 'hover:bg-muted'
             }`}
           >

@@ -1,4 +1,5 @@
 import { LucideIcon } from 'lucide-react';
+
 import { Card } from '@/components/ui/card';
 
 interface Props {
@@ -13,25 +14,95 @@ export function StatCard({
   icon: Icon,
 }: Props) {
   return (
-    <Card className="group cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/40">
-  <div className="flex items-center justify-between">
-    <div>
-      <p className="text-sm uppercase tracking-widest text-slate-500">
-        {title}
-      </p>
+    <Card
+      className="
+        group
 
-      <h2 className="mt-4 text-3xl lg:text-4xl font-bold text-white">
-        {value}
-      </h2>
-    </div>
+        cursor-pointer
 
-    <div className="rounded-2xl bg-emerald-500/10 p-4 transition-all group-hover:bg-emerald-500/20">
-      <Icon
-        size={30}
-        className="text-emerald-400"
-      />
-    </div>
-  </div>
-</Card>
+        p-6
+
+        transition-all
+        duration-200
+
+        hover:-translate-y-1
+        hover:border-primary/20
+        hover:shadow-md
+      "
+    >
+      <div className="flex items-start justify-between">
+
+        <div>
+
+          <p
+            className="
+              text-xs
+              font-semibold
+              uppercase
+              tracking-[0.18em]
+
+              text-muted-foreground
+            "
+          >
+            {title}
+          </p>
+
+          <h2
+            className="
+              mt-4
+
+              text-3xl
+              font-semibold
+              tracking-tight
+
+              text-foreground
+
+              lg:text-4xl
+            "
+          >
+            {value}
+          </h2>
+
+        </div>
+
+        <div
+          className="
+            flex
+            h-14
+            w-14
+            items-center
+            justify-center
+
+            rounded-2xl
+
+            border
+            border-border
+
+            bg-muted
+
+            transition-all
+            duration-200
+
+            group-hover:bg-accent
+            group-hover:border-primary/20
+          "
+        >
+
+          <Icon
+            size={28}
+            className="
+              text-primary
+              transition-transform
+              duration-200
+
+              group-hover:scale-110
+            "
+          />
+
+        </div>
+
+      </div>
+
+    </Card>
   );
 }

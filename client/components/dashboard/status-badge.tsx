@@ -10,7 +10,7 @@ export function StatusBadge({
     IN_PROGRESS:
       "bg-yellow-500/10 text-yellow-400",
     RESOLVED:
-      "bg-emerald-500/10 text-emerald-400",
+      "bg-primary-400/10 text-emerald-400",
     CLOSED:
       "bg-slate-700 text-slate-300",
   };

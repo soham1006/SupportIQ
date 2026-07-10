@@ -8,7 +8,7 @@ export class CustomerRepository {
     return prisma.user.findMany({
       where: {
         organizationId,
-        role: UserRole.CUSTOMER,
+        role: UserRole.ADMIN,
       },
 
       select: {
@@ -39,7 +39,7 @@ export class CustomerRepository {
       where: {
         id,
         organizationId,
-        role: UserRole.CUSTOMER,
+        role: UserRole.ADMIN,
       },
 
       select: {
@@ -89,7 +89,7 @@ export class CustomerRepository {
         password: data.password,
         organizationId:
           data.organizationId,
-        role: UserRole.CUSTOMER,
+        role: UserRole.ADMIN,
       },
 
       select: {

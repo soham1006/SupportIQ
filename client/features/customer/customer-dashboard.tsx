@@ -37,7 +37,7 @@ export function CustomerDashboard() {
 
             <Link
               href="/chat"
-              className="inline-flex rounded-lg bg-emerald-600 px-5 py-2 text-white transition hover:bg-emerald-700"
+              className="inline-flex rounded-lg bg-primary-500 px-5 py-2 text-white transition hover:bg-emerald-700"
             >
               Start Chat
             </Link>
@@ -58,7 +58,7 @@ export function CustomerDashboard() {
 
             <Link
               href="/knowledge"
-              className="inline-flex rounded-lg bg-emerald-600 px-5 py-2 text-white transition hover:bg-emerald-700"
+              className="inline-flex rounded-lg bg-primary-500 px-5 py-2 text-white transition hover:bg-emerald-700"
             >
               Manage Documents
             </Link>
@@ -79,7 +79,7 @@ export function CustomerDashboard() {
 
             <Link
               href="/tickets"
-              className="inline-flex rounded-lg bg-emerald-600 px-5 py-2 text-white transition hover:bg-emerald-700"
+              className="inline-flex rounded-lg bg-primary-500 px-5 py-2 text-white transition hover:bg-emerald-700"
             >
               View Tickets
             </Link>

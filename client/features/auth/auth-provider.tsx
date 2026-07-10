@@ -7,7 +7,10 @@ import {
 
 import { AuthContext } from './auth-context';
 import { User } from './auth.types';
-import { getMe, logout as logoutApi } from './api';
+import {
+  getMe,
+  logout as logoutApi,
+} from './api';
 
 interface Props {
   children: React.ReactNode;
@@ -55,7 +58,7 @@ export function AuthProvider({
     refreshUser();
   }, []);
 
-  function login(
+  async function login(
     user: User,
     token: string,
   ) {
@@ -65,21 +68,24 @@ export function AuthProvider({
     );
 
     setUser(user);
+
+    // Sync with backend
+    await refreshUser();
   }
 
   async function logout() {
-  try {
-    await logoutApi();
-  } catch (error) {
-    console.error(error);
-  } finally {
-    localStorage.removeItem(
-      'accessToken',
-    );
+    try {
+      await logoutApi();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      localStorage.removeItem(
+        'accessToken',
+      );
 
-    setUser(null);
+      setUser(null);
+    }
   }
-}
 
   return (
     <AuthContext.Provider

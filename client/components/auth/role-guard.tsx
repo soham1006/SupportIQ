@@ -66,15 +66,24 @@ export function RoleGuard({
     );
   }
 
-  if (!user) {
-    return null;
-  }
+ if (!user) {
+  router.replace('/login');
 
-  if (
-    !allowedRoles.includes(user.role)
-  ) {
-    return null;
-  }
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      Redirecting...
+    </div>
+  );
+}
 
-  return children;
+if (!allowedRoles.includes(user.role)) {
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      Redirecting...
+    </div>
+  );
+}
+
+return children;
+
 }

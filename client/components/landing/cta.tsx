@@ -1,67 +1,194 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, Sparkles } from 'lucide-react';
+
+import {
+  ArrowRight,
+  Sparkles,
+} from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
 
 export function CTA() {
   return (
-    <section className="py-24">
+    <section className="py-28">
 
       <div className="mx-auto max-w-7xl px-6">
 
-        <div className="relative overflow-hidden rounded-3xl border border-emerald-500/20 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 px-8 py-16 text-center text-white shadow-2xl">
+        <div
+          className="
+          relative
 
-          {/* Background Glow */}
+          overflow-hidden
 
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.15),transparent_60%)]" />
+          rounded-[2rem]
+
+          border
+          border-border
+
+          bg-primary
+
+          px-8
+          py-20
+
+          text-center
+
+          text-primary-foreground
+
+          shadow-2xl
+          "
+        >
+
+          {/* Glow */}
+
+          <div
+            className="
+            absolute
+            inset-0
+
+            bg-[radial-gradient(circle_at_top,rgba(255,255,255,.16),transparent_60%)]
+            "
+          />
+
+          <div
+            className="
+            absolute
+
+            -right-32
+            -top-32
+
+            h-80
+            w-80
+
+            rounded-full
+
+            bg-white/10
+
+            blur-3xl
+            "
+          />
 
           <div className="relative">
 
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm">
+            {/* Badge */}
 
-              <Sparkles size={16} />
+            <div
+              className="
+              mb-8
 
-              AI Customer Support Platform
+              inline-flex
+
+              items-center
+              gap-2
+
+              rounded-full
+
+              border
+              border-white/20
+
+              bg-white/10
+
+              px-5
+              py-2.5
+              "
+            >
+
+              <Sparkles size={15} />
+
+              <span className="text-sm font-medium">
+                AI Customer Support Platform
+              </span>
 
             </div>
 
-            <h2 className="mx-auto max-w-4xl text-4xl font-bold leading-tight md:text-5xl">
+            {/* Heading */}
 
-              Ready to Experience
-              <br />
-              AI-Powered Customer Support?
+            <h2
+              className="
+              mx-auto
+
+              max-w-4xl
+
+              text-4xl
+
+              font-semibold
+
+              leading-tight
+
+              tracking-tight
+
+              md:text-6xl
+              "
+            >
+
+              Ready to transform your customer support?
 
             </h2>
 
-            <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-emerald-50">
+            {/* Description */}
 
-              Upload your companys knowledge base, answer customer
-              questions instantly with AI, and automatically escalate
-              complex issues to your support team.
+            <p
+              className="
+              mx-auto
+
+              mt-6
+
+              max-w-3xl
+
+              text-lg
+
+              leading-8
+
+              text-primary-foreground/80
+              "
+            >
+
+              Upload your knowledge base, answer customer questions instantly,
+              and seamlessly hand complex conversations to your support team.
 
             </p>
 
-            <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+            {/* Buttons */}
 
-              <Link
-                href="/register"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-7 py-4 font-semibold text-emerald-700 transition hover:scale-105 hover:bg-emerald-50"
+            <div className="mt-12 flex flex-col justify-center gap-4 sm:flex-row">
+
+              <Button
+                asChild
+                variant="secondary"
+                size="lg"
               >
 
-                Get Started
+                <Link href="/register">
 
-                <ArrowRight size={18} />
+                  Get Started
 
-              </Link>
+                  <ArrowRight size={18} />
 
-              <Link
-                href="/login"
-                className="inline-flex items-center justify-center rounded-xl border border-white/30 px-7 py-4 font-semibold text-white transition hover:bg-white/10"
+                </Link>
+
+              </Button>
+
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="
+                  border-white/25
+
+                  bg-transparent
+
+                  text-white
+
+                  hover:bg-white/10
+                  hover:text-white
+                "
               >
 
-                Login
+                <Link href="/login">
+                  Login
+                </Link>
 
-              </Link>
+              </Button>
 
             </div>
 

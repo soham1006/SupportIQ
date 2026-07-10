@@ -21,26 +21,67 @@ const stats = [
 
 export function Stats() {
   return (
-    <section className="border-y bg-muted/20 py-20">
+    <section className="py-24">
 
       <div className="mx-auto max-w-7xl px-6">
 
-        <div className="grid gap-10 text-center md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
 
-          {stats.map(stat => (
+          {stats.map((stat) => (
 
-            <div key={stat.label}>
+            <div
+              key={stat.label}
+              className="
+                group
 
-              <h2 className="text-4xl font-bold text-emerald-500">
+                rounded-3xl
 
+                border
+                border-border
+
+                bg-card
+
+                p-8
+
+                text-center
+
+                shadow-sm
+
+                transition-all
+                duration-300
+
+                hover:-translate-y-1
+                hover:border-primary/20
+                hover:shadow-lg
+              "
+            >
+
+              <h2
+                className="
+                  text-5xl
+
+                  font-semibold
+
+                  tracking-tight
+
+                  text-primary
+                "
+              >
                 {stat.value}
-
               </h2>
 
-              <p className="mt-3 text-muted-foreground">
+              <p
+                className="
+                  mt-4
 
+                  text-sm
+
+                  leading-6
+
+                  text-muted-foreground
+                "
+              >
                 {stat.label}
-
               </p>
 
             </div>

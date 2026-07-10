@@ -91,7 +91,7 @@ export function CustomerTable({
                   onClick={() =>
                     onEdit(customer)
                   }
-                  className="mr-4 text-blue-600 hover:underline"
+                  className="mr-4 text-primary-500 hover:underline"
                 >
                   Edit
                 </button>

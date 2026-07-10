@@ -54,36 +54,33 @@ export function LoginForm() {
       const response =
   await loginMutation.mutateAsync(data);
 
-      login(
+      await login(
   response.data.user,
   response.data.accessToken,
 );
 
-      toast.success(
-        'Login successful!',
-      );
+toast.success(
+  'Login successful!',
+);
 
-      const role =
-        response.data.user.role;
+switch (response.data.user.role) {
+  case 'ADMIN':
+    router.replace('/dashboard/admin');
+    break;
 
-      switch (role) {
-        case 'ADMIN':
-          router.push(
-            '/dashboard/admin',
-          );
-          break;
+  case 'AGENT':
+    router.replace('/dashboard/agent');
+    break;
 
-        case 'AGENT':
-          router.push(
-            '/dashboard/agent',
-          );
-          break;
+  case 'CUSTOMER':
+    router.replace('/dashboard/customer');
+    break;
 
-        default:
-          router.push(
-            '/dashboard/customer',
-          );
-      }
+  default:
+    toast.error(
+      'Unknown user role.',
+    );
+}
     } catch (error: any) {
       toast.error(
         error?.response?.data?.message ??

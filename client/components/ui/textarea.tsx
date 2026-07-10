@@ -12,28 +12,40 @@ function Textarea({
       className={cn(
         `
         flex
-        min-h-[120px]
         w-full
+        min-h-[140px]
         resize-y
-        rounded-xl
+
+        rounded-lg
         border
-        border-border
+        border-input
+
         bg-card
+
         px-4
         py-3
-        text-[15px]
+
+        text-sm
         leading-7
         text-foreground
+
         placeholder:text-muted-foreground
+
+        shadow-sm
+
         transition-all
         duration-200
+
         outline-none
 
-        focus:border-primary
+        hover:border-ring/40
+
+        focus:border-ring
         focus:ring-2
-        focus:ring-primary/15
+        focus:ring-ring/20
 
         disabled:cursor-not-allowed
+        disabled:bg-muted
         disabled:opacity-50
         `,
         className

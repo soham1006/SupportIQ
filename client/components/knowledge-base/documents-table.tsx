@@ -3,8 +3,6 @@
 import {
   FileText,
   MoreHorizontal,
-  RefreshCcw,
-  Trash2,
 } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
@@ -13,18 +11,25 @@ import { Button } from '@/components/ui/button';
 import { useDocuments } from '@/features/documents/use-documents';
 import { useDeleteDocument } from '@/features/documents/use-delete-document';
 
+interface Document {
+  id: string;
+  title: string;
+  status: 'READY' | 'PROCESSING' | 'FAILED';
+  fileSize: number;
+  createdAt: string;
+  _count?: {
+    chunks: number;
+  };
+}
+
 function StatusBadge({
   status,
 }: {
-  status: string;
+  status: Document['status'];
 }) {
   switch (status) {
     case 'READY':
-      return (
-        <Badge variant="success">
-          Ready
-        </Badge>
-      );
+      return <Badge variant="success">Ready</Badge>;
 
     case 'PROCESSING':
       return (
@@ -41,11 +46,7 @@ function StatusBadge({
       );
 
     default:
-      return (
-        <Badge variant="secondary">
-          Unknown
-        </Badge>
-      );
+      return <Badge>Unknown</Badge>;
   }
 }
 
@@ -57,187 +58,158 @@ export function DocumentsTable() {
     useDeleteDocument();
 
   const documents =
-    data?.data ?? [];
+    (data?.data as Document[]) ?? [];
 
   if (isLoading) {
     return (
-      <div className="flex h-64 items-center justify-center text-muted-foreground">
-        Loading documents...
+      <div className="space-y-4">
+
+        {[1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="h-32 animate-pulse rounded-3xl border border-border bg-card"
+          />
+        ))}
+
       </div>
     );
   }
 
   if (!documents.length) {
     return (
-      <div className="flex h-64 flex-col items-center justify-center gap-3">
+      <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border py-20">
 
-        <FileText
-          size={42}
-          className="text-muted-foreground"
-        />
+        <div className="rounded-3xl bg-primary/10 p-5">
 
-        <div className="text-center">
-
-          <h3 className="font-semibold">
-            No documents uploaded
-          </h3>
-
-          <p className="text-sm text-muted-foreground">
-            Upload your first PDF to start building your AI knowledge base.
-          </p>
+          <FileText
+            size={36}
+            className="text-primary"
+          />
 
         </div>
+
+        <h3 className="mt-6 text-xl font-semibold">
+
+          No documents yet
+
+        </h3>
+
+        <p className="mt-3 max-w-md text-center text-muted-foreground">
+
+          Upload your first PDF and start building
+          your AI knowledge base.
+
+        </p>
 
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div className="space-y-5">
 
-      <table className="w-full">
+      {documents.map((doc) => (
 
-        <thead>
+        <div
+          key={doc.id}
+          className="
+            rounded-3xl
+            border
+            border-border
+            bg-card
+            p-6
+            shadow-sm
+            transition-all
+            duration-200
+            hover:-translate-y-1
+            hover:shadow-lg
+          "
+        >
 
-          <tr className="border-b border-border text-left text-sm text-muted-foreground">
+          <div className="flex items-start justify-between">
 
-            <th className="px-6 py-4">
-              Document
-            </th>
+            <div className="flex gap-5">
 
-            <th>Status</th>
+              <div className="rounded-2xl bg-primary/10 p-4">
 
-            <th>Chunks</th>
+                <FileText
+                  size={24}
+                  className="text-primary"
+                />
 
-            <th>Size</th>
+              </div>
 
-            <th>Uploaded</th>
-
-            <th className="text-right pr-6">
-              Actions
-            </th>
-
-          </tr>
-
-        </thead>
-
-        <tbody>
-
-          {documents.map((doc: any) => (
-
-            <tr
-              key={doc.id}
-              className="border-b border-border transition hover:bg-muted/40"
-            >
-
-              <td className="px-6 py-5">
+              <div>
 
                 <div className="flex items-center gap-3">
 
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                  <h3 className="text-lg font-semibold">
 
-                    <FileText
-                      size={20}
-                      className="text-primary"
-                    />
+                    {doc.title}
 
-                  </div>
+                  </h3>
 
-                  <div>
-
-                    <p className="font-medium">
-                      {doc.title}
-                    </p>
-
-                    <p className="text-sm text-muted-foreground">
-                      PDF Document
-                    </p>
-
-                  </div>
+                  <StatusBadge
+                    status={doc.status}
+                  />
 
                 </div>
 
-              </td>
+                <p className="mt-1 text-sm text-muted-foreground">
 
-              <td>
+                  PDF Document
 
-                <StatusBadge
-                  status={doc.status}
-                />
+                </p>
 
-              </td>
+                <div className="mt-5 flex flex-wrap gap-6 text-sm text-muted-foreground">
 
-              <td>
+                  <span>
 
-                {doc._count?.chunks ?? 0}
+                    {doc._count?.chunks ?? 0} chunks
 
-              </td>
+                  </span>
 
-              <td>
+                  <span>
 
-                {(doc.fileSize / 1024 / 1024).toFixed(2)} MB
+                    {(doc.fileSize / 1024 / 1024).toFixed(2)} MB
 
-              </td>
+                  </span>
 
-              <td>
+                  <span>
 
-                {new Date(
-                  doc.createdAt,
-                ).toLocaleDateString()}
+                    {new Date(
+                      doc.createdAt,
+                    ).toLocaleDateString('en-US', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                    })}
 
-              </td>
-
-              <td>
-
-                <div className="flex justify-end gap-2 pr-6">
-
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    title="Re-index (Coming Soon)"
-                  >
-                    <RefreshCcw
-                      size={16}
-                    />
-                  </Button>
-
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    disabled={
-                      deleteDocument.isPending
-                    }
-                    onClick={() =>
-                      deleteDocument.mutate(
-                        doc.id,
-                      )
-                    }
-                  >
-                    <Trash2
-                      size={16}
-                    />
-                  </Button>
-
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                  >
-                    <MoreHorizontal
-                      size={16}
-                    />
-                  </Button>
+                  </span>
 
                 </div>
 
-              </td>
+              </div>
 
-            </tr>
+            </div>
 
-          ))}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() =>
+                deleteDocument.mutate(doc.id)
+              }
+            >
 
-        </tbody>
+              <MoreHorizontal size={18} />
 
-      </table>
+            </Button>
+
+          </div>
+
+        </div>
+
+      ))}
 
     </div>
   );

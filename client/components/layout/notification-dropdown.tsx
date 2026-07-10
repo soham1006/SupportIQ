@@ -8,6 +8,9 @@ import {
   UserPlus,
 } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+
 import { useNotifications } from '@/features/notifications/use-notifications';
 import { useMarkAllRead } from '@/features/notifications/use-mark-all-read';
 import { useMarkRead } from '@/features/notifications/use-mark-read';
@@ -33,24 +36,25 @@ function getIcon(type: string) {
 }
 
 export function NotificationDropdown() {
-  const {
-    data,
-    isLoading,
-  } = useNotifications();
+  const { data, isLoading } = useNotifications();
 
-  const markAll =
-    useMarkAllRead();
-
-  const markRead =
-    useMarkRead();
+  const markAll = useMarkAllRead();
+  const markRead = useMarkRead();
 
   if (isLoading) {
     return (
       <div className="absolute right-0 top-12 z-50 w-96 rounded-2xl border border-border bg-card shadow-xl">
 
-        <div className="p-6 text-center">
+        <div className="space-y-4 p-6">
 
-          Loading notifications...
+          <Skeleton className="h-6 w-40" />
+
+          {[1, 2, 3].map((i) => (
+            <Skeleton
+              key={i}
+              className="h-20 rounded-xl"
+            />
+          ))}
 
         </div>
 
@@ -58,116 +62,172 @@ export function NotificationDropdown() {
     );
   }
 
-  const notifications =
-    data?.data ?? [];
+  const notifications = data?.data ?? [];
 
   return (
-    <div className="absolute right-0 top-12 z-50 w-96 overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
+    <div className="absolute right-0 top-12 z-50 w-96 overflow-hidden rounded-2xl border border-border bg-card shadow-xl">
 
-      <div className="flex items-center justify-between border-b border-border p-4">
+      {/* Header */}
 
-        <h3 className="font-semibold">
-          Notifications
-        </h3>
+      <div className="flex items-center justify-between border-b border-border px-5 py-4">
 
-        {notifications.length >
-          0 && (
-          <button
-            disabled={
-              markAll.isPending
-            }
-            onClick={() =>
-              markAll.mutate()
-            }
-            className="text-sm text-primary hover:underline disabled:opacity-50"
+        <div>
+
+          <h3 className="font-semibold">
+            Notifications
+          </h3>
+
+          <p className="text-xs text-muted-foreground">
+            {notifications.length} notification{notifications.length !== 1 && 's'}
+          </p>
+
+        </div>
+
+        {notifications.length > 0 && (
+
+          <Button
+            variant="ghost"
+            size="sm"
+            disabled={markAll.isPending}
+            onClick={() => markAll.mutate()}
           >
             Mark all
-          </button>
+          </Button>
+
         )}
 
       </div>
 
-      {notifications.length ===
-      0 ? (
-        <div className="p-8 text-center text-sm text-muted-foreground">
+      {notifications.length === 0 ? (
 
-          No notifications yet.
+        <div className="flex flex-col items-center justify-center gap-3 p-10">
+
+          <div className="rounded-2xl border border-border bg-muted p-4">
+
+            <Bell className="text-muted-foreground" />
+
+          </div>
+
+          <p className="font-medium">
+            You are all caught up
+          </p>
+
+          <p className="text-sm text-muted-foreground">
+            No notifications yet.
+          </p>
 
         </div>
+
       ) : (
-        <div className="max-h-[420px] overflow-y-auto">
 
-          {notifications.map(
-            notification => {
-              const Icon =
-                getIcon(
-                  notification.type,
-                );
+        <div className="max-h-[430px] overflow-y-auto p-2">
 
-              return (
-                <button
-                  key={
-                    notification.id
+          {notifications.map((notification) => {
+
+            const Icon = getIcon(notification.type);
+
+            return (
+
+              <button
+                key={notification.id}
+                onClick={() => {
+                  if (!notification.isRead) {
+                    markRead.mutate(notification.id);
                   }
-                  onClick={() => {
-                    if (
-                      !notification.isRead
-                    ) {
-                      markRead.mutate(
-                        notification.id,
-                      );
-                    }
-                  }}
-                  className={`flex w-full items-start gap-4 border-b border-border p-4 text-left transition hover:bg-muted ${
+                }}
+                className={`
+                  mb-2
+                  flex
+                  w-full
+                  items-start
+                  gap-4
+
+                  rounded-xl
+
+                  p-3
+
+                  text-left
+
+                  transition-all
+                  duration-200
+
+                  hover:bg-accent
+
+                  ${
                     !notification.isRead
-                      ? 'bg-primary/5'
+                      ? 'bg-primary/5 border border-primary/10'
                       : ''
-                  }`}
+                  }
+                `}
+              >
+
+                <div
+                  className="
+                    flex
+                    h-10
+                    w-10
+                    shrink-0
+                    items-center
+                    justify-center
+
+                    rounded-xl
+
+                    border
+                    border-border
+
+                    bg-muted
+                  "
                 >
 
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                  <Icon
+                    size={18}
+                    className="text-primary"
+                  />
 
-                    <Icon
-                      size={18}
-                      className="text-primary"
-                    />
+                </div>
+
+                <div className="min-w-0 flex-1">
+
+                  <div className="flex items-center gap-2">
+
+                    <p className="truncate font-medium">
+
+                      {notification.title}
+
+                    </p>
+
+                    {!notification.isRead && (
+
+                      <span className="h-2 w-2 rounded-full bg-primary" />
+
+                    )}
 
                   </div>
 
-                  <div className="flex-1">
+                  <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
 
-                    <p className="font-medium">
+                    {notification.message}
 
-                      {
-                        notification.title
-                      }
+                  </p>
 
-                    </p>
+                  <p className="mt-3 text-xs text-muted-foreground">
 
-                    <p className="mt-1 text-sm text-muted-foreground">
+                    {new Date(
+                      notification.createdAt
+                    ).toLocaleString()}
 
-                      {
-                        notification.message
-                      }
+                  </p>
 
-                    </p>
+                </div>
 
-                    <p className="mt-2 text-xs text-muted-foreground">
+              </button>
 
-                      {new Date(
-                        notification.createdAt,
-                      ).toLocaleString()}
+            );
 
-                    </p>
-
-                  </div>
-
-                </button>
-              );
-            },
-          )}
+          })}
 
         </div>
+
       )}
 
     </div>

@@ -46,7 +46,7 @@ router.get(
 router.get(
   '/admin-test',
   authenticate,
-  authorize(UserRole.ADMIN, UserRole.SUPER_ADMIN),
+  authorize(UserRole.ADMIN),
   (_req, res) => {
     res.json({
       success: true,
@@ -61,7 +61,6 @@ router.get(
   authorize(
     UserRole.AGENT,
     UserRole.ADMIN,
-    UserRole.SUPER_ADMIN,
   ),
   (_req, res) => {
     res.json({

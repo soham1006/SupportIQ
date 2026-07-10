@@ -7,86 +7,205 @@ import {
   Sparkles,
 } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
+
 import { useAuth } from '@/features/auth/use-auth';
 
 export function Hero() {
-  const { user } =
-    useAuth();
+  const { user } = useAuth();
 
   const dashboardHref =
     user?.role === 'ADMIN'
       ? '/dashboard/admin'
       : user?.role === 'AGENT'
-      ? '/dashboard/agent'
-      : '/dashboard/customer';
+        ? '/dashboard/agent'
+        : '/dashboard/customer';
 
   return (
-    <section className="relative overflow-hidden">
+    <section
+      className="
+      relative
+      overflow-hidden
+      "
+    >
+      {/* Ink Wash Background */}
 
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.12),transparent_55%)]" />
+      <div
+        className="
+        absolute
+        inset-0
 
-      <div className="relative mx-auto flex min-h-[85vh] max-w-7xl flex-col items-center justify-center px-6 text-center">
+        bg-[radial-gradient(circle_at_top,rgba(120,113,108,.10),transparent_42%)]
+        "
+      />
 
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-400">
+      <div
+        className="
+        absolute
+        inset-0
 
-          <Sparkles size={16} />
+        bg-[radial-gradient(circle_at_bottom_right,rgba(168,162,158,.05),transparent_45%)]
+        "
+      />
 
-          AI Powered Customer Support
+      <div
+        className="
+        relative
+
+        mx-auto
+
+        flex
+        min-h-[90vh]
+
+        max-w-7xl
+
+        flex-col
+        items-center
+        justify-center
+
+        px-6
+
+        text-center
+        "
+      >
+
+        {/* Badge */}
+
+        <div
+          className="
+          mb-8
+
+          inline-flex
+          items-center
+          gap-2
+
+          rounded-full
+
+          border
+          border-border
+
+          bg-card
+
+          px-5
+          py-2.5
+
+          shadow-sm
+          "
+        >
+
+          <Sparkles
+            size={15}
+            className="text-primary"
+          />
+
+          <span className="text-sm font-medium text-muted-foreground">
+            AI Powered Customer Support
+          </span>
 
         </div>
 
-        <h1 className="max-w-5xl text-5xl font-extrabold leading-tight tracking-tight md:text-7xl">
+        {/* Heading */}
 
+        <h1
+          className="
+          max-w-5xl
+
+          text-5xl
+          font-semibold
+
+          leading-tight
+          tracking-tight
+
+          md:text-7xl
+          "
+        >
           Customer Support
 
-          <span className="block text-emerald-500">
+          <span
+            className="
+            mt-2
+            block
 
-            Powered by AI
-
+            text-primary
+            "
+          >
+            Powered by Intelligence
           </span>
 
         </h1>
 
-        <p className="mt-8 max-w-3xl text-lg leading-8 text-muted-foreground md:text-xl">
+        {/* Description */}
 
+        <p
+          className="
+          mt-8
+
+          max-w-3xl
+
+          text-lg
+          leading-8
+
+          text-muted-foreground
+
+          md:text-xl
+          "
+        >
           Upload your companys knowledge base and let AI answer customer
           questions instantly. When confidence is low, SupportIQ automatically
-          creates tickets and routes them to the best support agent.
-
+          creates tickets and routes them to the right support agent.
         </p>
 
-        <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+        {/* Actions */}
+
+        <div className="mt-12 flex flex-col gap-4 sm:flex-row">
 
           {user ? (
-            <Link
-              href={dashboardHref}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-7 py-4 text-lg font-semibold text-white transition hover:bg-emerald-700"
+            <Button
+              asChild
+              size="lg"
             >
-              Go to Dashboard
+              <Link href={dashboardHref}>
 
-              <ArrowRight size={18} />
-            </Link>
-          ) : (
-            <>
-              <Link
-                href="/register"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-7 py-4 text-lg font-semibold text-white transition hover:bg-emerald-700"
-              >
-                Get Started
+                Go to Dashboard
 
                 <ArrowRight size={18} />
-              </Link>
 
-              <Link
-                href="/login"
-                className="inline-flex items-center justify-center rounded-xl border border-border px-7 py-4 text-lg transition hover:bg-muted"
-              >
-                Login
               </Link>
+            </Button>
+          ) : (
+            <>
+              <Button
+                asChild
+                size="lg"
+              >
+                <Link href="/register">
+
+                  Get Started
+
+                  <ArrowRight size={18} />
+
+                </Link>
+              </Button>
+
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+              >
+                <Link href="/login">
+                  Login
+                </Link>
+              </Button>
             </>
           )}
 
         </div>
+
+        {/* Bottom Note */}
+
+        <p className="mt-8 text-sm text-muted-foreground">
+          Trusted AI workflows for modern support teams.
+        </p>
 
       </div>
 

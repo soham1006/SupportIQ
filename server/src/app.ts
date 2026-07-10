@@ -18,6 +18,7 @@ import analyticsRoutes from "./modules/analytics/analytics.routes";
 import notificationRoutes from "./modules/notification/notification.routes";
 import chatRoutes from "./modules/chat/chat.routes";
 import customerRoutes from './modules/customer/customer.routes';
+import profileRoutes from "./modules/profile/profile.routes";
 
 app.use(
   cors({
@@ -43,6 +44,10 @@ app.use("/api/v1/chat", chatRoutes);
 app.use(
   '/api/v1/customers',
   customerRoutes,
+);
+app.use(
+  '/api/v1/profile',
+  profileRoutes,
 );
 
 app.use(notFoundHandler);

@@ -16,7 +16,7 @@ export function ConfidenceBadge({
 
   if (percent >= 90) {
     color =
-      'bg-emerald-500/10 text-emerald-500';
+      'bg-primary-400/10 text-emerald-500';
   } else if (percent >= 70) {
     color =
       'bg-yellow-500/10 text-yellow-500';

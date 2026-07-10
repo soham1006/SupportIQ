@@ -3,6 +3,7 @@ export interface User {
   name: string;
   email: string;
   role: 'ADMIN' | 'AGENT' | 'CUSTOMER';
+  organizationId: string;
 }
 
 export interface AuthContextType {
@@ -12,7 +13,7 @@ export interface AuthContextType {
   login: (
     user: User,
     token: string,
-  ) => void;
+  ) => Promise<void>;
 
   logout: () => Promise<void>;
 

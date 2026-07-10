@@ -5,9 +5,16 @@ import {
   Clock3,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { Card } from "@/components/ui/card";
-import { useRecentTickets } from '@/features/dashboard/use-recent-tickets';import { StatusBadge } from './status-badge';
+
+import { Card } from '@/components/ui/card';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+
+import { useRecentTickets } from '@/features/dashboard/use-recent-tickets';
 import { Ticket } from '@/features/tickets/types';
+
+import { StatusBadge } from './status-badge';
 
 export function RecentTickets() {
   const { data, isLoading } = useRecentTickets();
@@ -15,134 +22,151 @@ export function RecentTickets() {
 
   if (isLoading) {
     return (
-      <Card className="space-y-4">
-        <div className="h-8 w-56 animate-pulse rounded-xl bg-slate-800" />
+      <Card className="space-y-5 p-6">
 
-        {[1, 2, 3, 4].map(i => (
-          <div
+        <Skeleton className="h-8 w-56" />
+
+        {[1, 2, 3].map((i) => (
+          <Skeleton
             key={i}
-            className="h-24 animate-pulse rounded-2xl bg-slate-800"
+            className="h-28 rounded-2xl"
           />
         ))}
+
       </Card>
     );
   }
 
   return (
-    <Card className="rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-900 to-slate-950 p-8">
+    <Card className="p-8">
 
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex items-end justify-between">
 
         <div>
 
-          <h2 className="text-3xl font-bold text-white">
+          <h2 className="text-2xl font-semibold tracking-tight">
             Recent Tickets
           </h2>
 
-          <p className="mt-2 text-slate-400">
+          <p className="mt-2 text-muted-foreground">
             Latest conversations requiring attention.
           </p>
 
         </div>
 
-        <button
-  onClick={() =>
-    router.push('/tickets')
-  }
-  className="rounded-2xl border border-slate-700 px-5 py-3 text-sm font-medium text-slate-300 transition hover:border-emerald-500 hover:text-white"
->
-
-  View All
-
-</button>
+        <Button
+          variant="outline"
+          onClick={() =>
+            router.push('/tickets')
+          }
+        >
+          View All
+        </Button>
 
       </div>
 
       <div className="space-y-4">
 
         {data?.data
-  ?.slice(0, 3)
-  .map((ticket: Ticket) => (
+          ?.slice(0, 3)
+          .map((ticket: Ticket) => (
 
-          <div
-            key={ticket.id}
-            className="group rounded-2xl border border-slate-800 bg-slate-900 p-6 transition-all duration-300 hover:border-emerald-500/40 hover:bg-slate-800"
-          >
+            <div
+              key={ticket.id}
+              className="
+                group
 
-            <div className="flex items-start justify-between">
+                rounded-2xl
 
-              <div className="flex flex-1 gap-4">
+                border
+                border-border
 
-                {/* Avatar */}
+                bg-background/40
 
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 font-semibold text-white">
+                p-5
 
-                  {ticket.customer.name
-                    ?.charAt(0)
-                    ?.toUpperCase()}
+                transition-all
+                duration-200
 
-                </div>
+                hover:border-primary/25
+                hover:bg-accent/40
+              "
+            >
 
-                <div className="flex-1">
+              <div className="flex items-start justify-between gap-6">
 
-                  <div className="mb-2 flex items-center gap-3">
+                <div className="flex flex-1 gap-4">
 
-                    <h3 className="text-base font-semibold text-white">
+                  <Avatar size="lg">
 
-                      {ticket.subject}
+                    <AvatarFallback>
 
-                    </h3>
+                      {ticket.customer.name
+                        ?.charAt(0)
+                        ?.toUpperCase()}
 
-                    <StatusBadge
-                      status={ticket.status}
-                    />
+                    </AvatarFallback>
+
+                  </Avatar>
+
+                  <div className="min-w-0 flex-1">
+
+                    <div className="mb-2 flex flex-wrap items-center gap-3">
+
+                      <h3 className="truncate text-base font-semibold">
+
+                        {ticket.subject}
+
+                      </h3>
+
+                      <StatusBadge
+                        status={ticket.status}
+                      />
+
+                    </div>
+
+                    <p className="text-sm font-medium">
+
+                      {ticket.customer.name}
+
+                    </p>
+
+                    <p className="text-sm text-muted-foreground">
+
+                      {ticket.customer.email}
+
+                    </p>
+
+                    <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+
+                      <Clock3 size={15} />
+
+                      <span>
+                        Ticket #{ticket.id.slice(0, 8)}
+                      </span>
+
+                    </div>
 
                   </div>
 
-                  <p className="text-sm text-slate-400">
-
-                    {ticket.customer.name}
-
-                  </p>
-
-                  <p className="text-sm text-slate-500">
-
-                    {ticket.customer.email}
-
-                  </p>
-
-                  <div className="mt-4 flex items-center gap-2 text-sm text-slate-500">
-
-                    <Clock3 size={15} />
-
-                    Ticket #{ticket.id.slice(0, 8)}
-
-                  </div>
-
                 </div>
+
+                <Button
+                  variant="ghost"
+                  onClick={() =>
+                    router.push(`/tickets/${ticket.id}`)
+                  }
+                >
+                  Open
+
+                  <ArrowRight size={16} />
+                </Button>
 
               </div>
 
-              <button
-  onClick={() =>
-    router.push(
-      `/tickets/${ticket.id}`,
-    )
-  }
-  className="flex items-center gap-2 rounded-xl border border-slate-700 px-4 py-2 text-sm text-slate-300 transition hover:border-emerald-500 hover:text-white"
->
-
-  Open
-
-  <ArrowRight size={16} />
-
-</button>
-
             </div>
 
-          </div>
-
-        ))}
+          ))}
 
       </div>
 

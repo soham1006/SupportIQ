@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
-import { StatsCard } from "@/components/dashboard/stats-card";
+import { StatCard } from "@/components/dashboard/stat-card";
 import { useDashboardStats } from '@/features/dashboard/use-dashboard-stats';
 import { RecentTickets } from "@/components/dashboard/recent-tickets";
 import { DashboardHero } from "@/components/dashboard/dashboard-hero";
@@ -36,25 +36,25 @@ const { data, isLoading } =
 
     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
 
-  <StatsCard
+  <StatCard
     title="Total Tickets"
     value={data?.data.totalTickets ?? 0}
     icon={Ticket}
   />
 
-  <StatsCard
+  <StatCard
     title="Open Tickets"
     value={data?.data.openTickets ?? 0}
     icon={Clock}
   />
 
-  <StatsCard
+  <StatCard
     title="Active Agents"
     value={data?.data.totalAgents ?? 0}
     icon={Users}
   />
 
-  <StatsCard
+  <StatCard
     title="Knowledge Docs"
     value={data?.data.totalDocuments ?? 0}
     icon={CheckCircle}

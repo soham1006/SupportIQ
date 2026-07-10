@@ -2,7 +2,10 @@
 
 import { useRef } from 'react';
 
-import { Upload } from 'lucide-react';
+import {
+  Loader2,
+  Upload,
+} from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 
@@ -20,46 +23,60 @@ export function UploadDocumentButton() {
   ) {
     if (!file) return;
 
-    await upload.mutateAsync(
-      file,
-    );
+    await upload.mutateAsync(file);
   }
 
   return (
     <>
-
       <input
         ref={inputRef}
         hidden
         type="file"
         accept=".pdf"
-        onChange={e => {
+        onChange={(e) => {
           const file =
             e.target.files?.[0];
 
           if (file) {
             handleFile(file);
           }
+
+          e.target.value = '';
         }}
       />
 
       <Button
+        size="lg"
+        disabled={upload.isPending}
         onClick={() =>
           inputRef.current?.click()
         }
-        disabled={
-          upload.isPending
-        }
+        className="
+          min-w-[210px]
+          rounded-2xl
+          px-6
+          py-6
+          shadow-lg
+          hover:shadow-xl
+        "
       >
+        {upload.isPending ? (
+          <>
+            <Loader2
+              size={18}
+              className="animate-spin"
+            />
 
-        <Upload size={18} />
+            Uploading...
+          </>
+        ) : (
+          <>
+            <Upload size={18} />
 
-        {upload.isPending
-          ? 'Uploading...'
-          : 'Upload Document'}
-
+            Upload PDF
+          </>
+        )}
       </Button>
-
     </>
   );
 }

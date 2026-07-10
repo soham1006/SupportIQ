@@ -4,156 +4,147 @@ import {
   Briefcase,
   CheckCircle2,
   Clock3,
-  User,
 } from 'lucide-react';
 
-import { Card } from '@/components/ui/card';
 import { useRouter } from 'next/navigation';
+
+import { Card } from '@/components/ui/card';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+
 import { useAgentWorkload } from '@/features/dashboard/use-agent-workload';
 
 export function AgentWorkload() {
   const { data, isLoading } =
     useAgentWorkload();
 
-    const router = useRouter();
+  const router = useRouter();
 
   if (isLoading) {
     return (
-      <Card className="p-8">
-        <div className="text-muted-foreground">
-          Loading workload...
-        </div>
+      <Card className="space-y-5 p-8">
+
+        <Skeleton className="h-8 w-52" />
+
+        {[1, 2, 3].map((i) => (
+          <Skeleton
+            key={i}
+            className="h-36 rounded-2xl"
+          />
+        ))}
+
       </Card>
     );
   }
 
   return (
-    <Card className="rounded-3xl p-8">
+    <Card className="p-8">
 
-    <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex items-end justify-between">
 
-  <div>
+        <div>
 
-    <h2 className="text-2xl font-bold">
-      Agent Workload
-    </h2>
+          <h2 className="text-2xl font-semibold tracking-tight">
+            Agent Workload
+          </h2>
 
-    <p className="mt-2 text-muted-foreground">
-      Top 5 busiest support agents.
-    </p>
+          <p className="mt-2 text-muted-foreground">
+            Top 5 busiest support agents.
+          </p>
 
-  </div>
+        </div>
 
-  <button
-    onClick={() =>
-      router.push('/agents')
-    }
-    className="rounded-xl border border-border px-4 py-2 text-sm transition hover:border-primary hover:text-primary"
-  >
-    View All
-  </button>
+        <Button
+          variant="outline"
+          onClick={() =>
+            router.push('/agents')
+          }
+        >
+          View All
+        </Button>
 
-</div>
+      </div>
 
-      <div className="space-y-5">
+      <div className="space-y-4">
 
-        {data?.data.map(agent => (
+        {data?.data.map((agent) => (
 
           <div
             key={agent.id}
-            className="rounded-2xl border border-border p-5 transition hover:border-primary/40"
+            className="
+              rounded-2xl
+
+              border
+              border-border
+
+              bg-background/40
+
+              p-6
+
+              transition-all
+              duration-200
+
+              hover:border-primary/25
+              hover:bg-accent/40
+            "
           >
 
-            <div className="mb-5 flex items-center gap-4">
+            <div className="mb-6 flex items-center gap-4">
 
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <Avatar size="lg">
 
-                <User
-                  size={20}
-                  className="text-primary"
-                />
+                <AvatarFallback>
 
-              </div>
+                  {agent.name?.charAt(0)?.toUpperCase() ?? 'A'}
 
-              <div>
+                </AvatarFallback>
 
-                <h3 className="font-semibold">
+              </Avatar>
+
+              <div className="min-w-0">
+
+                <h3 className="truncate font-semibold">
+
                   {agent.name}
+
                 </h3>
 
-                <p className="text-sm text-muted-foreground">
+                <p className="truncate text-sm text-muted-foreground">
+
                   {agent.email}
+
                 </p>
 
               </div>
 
             </div>
 
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
 
-              <div>
+              <Stat
+                icon={<Briefcase size={16} />}
+                label="Total"
+                value={agent.totalTickets}
+              />
 
-                <div className="flex items-center gap-2 text-muted-foreground">
+              <Stat
+                icon={<Clock3 size={16} />}
+                label="Open"
+                value={agent.open}
+              />
 
-                  <Briefcase size={16} />
+              <Stat
+                icon={<Clock3 size={16} />}
+                label="Progress"
+                value={agent.inProgress}
+              />
 
-                  Total
-
-                </div>
-
-                <p className="mt-2 text-2xl font-bold">
-                  {agent.totalTickets}
-                </p>
-
-              </div>
-
-              <div>
-
-                <div className="flex items-center gap-2 text-muted-foreground">
-
-                  <Clock3 size={16} />
-
-                  Open
-
-                </div>
-
-                <p className="mt-2 text-2xl font-bold">
-                  {agent.open}
-                </p>
-
-              </div>
-
-              <div>
-
-                <div className="flex items-center gap-2 text-muted-foreground">
-
-                  <Clock3 size={16} />
-
-                  Progress
-
-                </div>
-
-                <p className="mt-2 text-2xl font-bold">
-                  {agent.inProgress}
-                </p>
-
-              </div>
-
-              <div>
-
-                <div className="flex items-center gap-2 text-muted-foreground">
-
-                  <CheckCircle2 size={16} />
-
-                  Resolved
-
-                </div>
-
-                <p className="mt-2 text-2xl font-bold">
-                  {agent.resolved}
-                </p>
-
-              </div>
+              <Stat
+                icon={<CheckCircle2 size={16} />}
+                label="Resolved"
+                value={agent.resolved}
+              />
 
             </div>
 
@@ -164,5 +155,48 @@ export function AgentWorkload() {
       </div>
 
     </Card>
+  );
+}
+
+interface StatProps {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+}
+
+function Stat({
+  icon,
+  label,
+  value,
+}: StatProps) {
+  return (
+    <div
+      className="
+        rounded-xl
+
+        border
+        border-border/60
+
+        bg-muted/30
+
+        p-4
+      "
+    >
+
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+
+        {icon}
+
+        <span>{label}</span>
+
+      </div>
+
+      <p className="mt-3 text-2xl font-semibold tracking-tight">
+
+        {value}
+
+      </p>
+
+    </div>
   );
 }

@@ -20,7 +20,12 @@ import {
   CardContent,
 } from '@/components/ui/card';
 
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
+
 import { useDashboardStats } from '@/features/dashboard/use-dashboard-stats';
+
+const CHART_COLOR = '#78716c'; // stone-500 (Ink Wash)
 
 export function TicketChart() {
   const { data, isLoading } =
@@ -30,9 +35,11 @@ export function TicketChart() {
     return (
       <Card>
 
-        <CardContent className="flex h-[420px] items-center justify-center text-muted-foreground">
+        <CardContent className="space-y-6 p-8">
 
-          Loading chart...
+          <Skeleton className="h-10 w-64" />
+
+          <Skeleton className="h-[320px] rounded-2xl" />
 
         </CardContent>
 
@@ -43,26 +50,22 @@ export function TicketChart() {
   const chartData = [
     {
       label: 'Open',
-      tickets:
-        data?.data.openTickets ?? 0,
+      tickets: data?.data.openTickets ?? 0,
     },
     {
       label: 'In Progress',
       tickets:
-        data?.data
-          .inProgressTickets ?? 0,
+        data?.data.inProgressTickets ?? 0,
     },
     {
       label: 'Resolved',
       tickets:
-        data?.data
-          .resolvedTickets ?? 0,
+        data?.data.resolvedTickets ?? 0,
     },
     {
       label: 'Closed',
       tickets:
-        data?.data
-          .closedTickets ?? 0,
+        data?.data.closedTickets ?? 0,
     },
   ];
 
@@ -73,49 +76,57 @@ export function TicketChart() {
 
         <div className="mb-8 flex items-center justify-between">
 
-          <div>
+          <div className="flex items-center gap-4">
 
-            <div className="mb-3 flex items-center gap-3">
+            <div
+              className="
+              flex
+              h-12
+              w-12
+              items-center
+              justify-center
 
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/15">
+              rounded-2xl
 
-                <Activity
-                  size={20}
-                  className="text-emerald-400"
-                />
+              border
+              border-border
 
-              </div>
+              bg-muted
+              "
+            >
 
-              <div>
+              <Activity
+                size={20}
+                className="text-primary"
+              />
 
-                <h2 className="text-2xl font-bold text-white">
-                  Ticket Status
-                </h2>
+            </div>
 
-                <p className="text-sm text-slate-400">
-                  Current ticket distribution
-                </p>
+            <div>
 
-              </div>
+              <h2 className="text-2xl font-semibold tracking-tight">
+
+                Ticket Status
+
+              </h2>
+
+              <p className="text-sm text-muted-foreground">
+
+                Current ticket distribution
+
+              </p>
 
             </div>
 
           </div>
 
-          <div className="flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-2">
+          <Badge>
 
-            <TrendingUp
-              size={16}
-              className="text-emerald-400"
-            />
+            <TrendingUp size={14} />
 
-            <span className="text-sm font-medium text-emerald-300">
+            {data?.data.totalTickets ?? 0} Tickets
 
-              {data?.data.totalTickets ?? 0}
-
-            </span>
-
-          </div>
+          </Badge>
 
         </div>
 
@@ -124,9 +135,7 @@ export function TicketChart() {
           height={340}
         >
 
-          <AreaChart
-            data={chartData}
-          >
+          <AreaChart data={chartData}>
 
             <defs>
 
@@ -140,13 +149,13 @@ export function TicketChart() {
 
                 <stop
                   offset="5%"
-                  stopColor="#22c55e"
-                  stopOpacity={0.45}
+                  stopColor={CHART_COLOR}
+                  stopOpacity={0.35}
                 />
 
                 <stop
                   offset="95%"
-                  stopColor="#22c55e"
+                  stopColor={CHART_COLOR}
                   stopOpacity={0}
                 />
 
@@ -155,45 +164,49 @@ export function TicketChart() {
             </defs>
 
             <CartesianGrid
-              stroke="#243244"
-              strokeDasharray="4 4"
               vertical={false}
+              stroke="#E7E5E4"
+              strokeDasharray="4 4"
             />
 
             <XAxis
               dataKey="label"
               tickLine={false}
               axisLine={false}
-              stroke="#94a3b8"
+              tick={{
+                fill: '#78716C',
+                fontSize: 12,
+              }}
             />
 
             <YAxis
               tickLine={false}
               axisLine={false}
-              stroke="#94a3b8"
+              tick={{
+                fill: '#78716C',
+                fontSize: 12,
+              }}
             />
 
             <Tooltip
               cursor={{
-                stroke:
-                  '#22c55e',
+                stroke: CHART_COLOR,
                 strokeWidth: 1,
               }}
               contentStyle={{
-                background:
-                  '#111827',
-                border:
-                  '1px solid #25314A',
-                borderRadius:
-                  '16px',
-                color: '#fff',
+                background: '#FFFFFF',
+                border: '1px solid #E7E5E4',
+                borderRadius: '16px',
+                color: '#1C1917',
+                boxShadow:
+                  '0 8px 30px rgba(0,0,0,.08)',
               }}
             />
 
             <Area
               type="monotone"
               dataKey="tickets"
-              stroke="#22c55e"
+              stroke={CHART_COLOR}
               strokeWidth={3}
               fill="url(#ticketGradient)"
             />

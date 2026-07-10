@@ -3,8 +3,9 @@
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { PageContainer } from '@/components/ui/page-container';
 import { PageHeader } from '@/components/ui/page-header';
-
+import { useAuth } from '@/features/auth/use-auth';
 export function SettingsPage() {
+  const user = useAuth().user;
   return (
     <DashboardLayout>
       <PageContainer>
@@ -25,16 +26,16 @@ export function SettingsPage() {
             <div className="space-y-4">
 
               <input
-                defaultValue="Soham"
+                defaultValue={user?.name ?? 'User'}
                 className="w-full rounded-lg border px-3 py-2"
               />
 
               <input
-                defaultValue="Admin"
+                defaultValue={user?.email ?? 'user@example.com'}
                 className="w-full rounded-lg border px-3 py-2"
               />
 
-              <button className="rounded-lg bg-emerald-600 px-5 py-2 text-white">
+              <button className="rounded-lg bg-primary-500 px-5 py-2 text-white">
 
                 Save Changes
 

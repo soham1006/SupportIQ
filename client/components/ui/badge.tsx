@@ -1,58 +1,105 @@
 import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-import { Slot } from "radix-ui";
 
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
   `
-  inline-flex
-  items-center
-  justify-center
-  rounded-full
-  border
-  px-3
-  py-1
-  text-xs
-  font-semibold
-  tracking-wide
-  transition-all
-  duration-200
-  `,
+inline-flex
+items-center
+justify-center
+
+rounded-full
+
+border
+
+px-2.5
+py-1
+
+text-xs
+font-medium
+
+transition-colors
+`,
   {
     variants: {
       variant: {
-        default:
-          "border-emerald-500/20 bg-emerald-500/10 text-emerald-400",
+        default: `
+bg-primary/10
+text-primary
+border-primary/15
+`,
 
-        secondary:
-          "border-border bg-muted text-muted-foreground",
+        secondary: `
+bg-secondary
+text-secondary-foreground
+border-border
+`,
 
-        destructive:
-          "border-red-500/20 bg-red-500/10 text-red-400",
+        outline: `
+bg-card
+text-foreground
+border-border
+`,
 
-        outline:
-          "border-border bg-transparent text-foreground",
+        ghost: `
+bg-transparent
+text-muted-foreground
+border-transparent
+hover:bg-muted
+`,
 
-        ghost:
-          "border-transparent bg-transparent text-muted-foreground hover:bg-muted",
+        destructive: `
+bg-red-500/10
+text-red-700
+border-red-300
+dark:text-red-300
+dark:border-red-800
+`,
 
-        link:
-          "border-none bg-transparent p-0 text-primary underline-offset-4 hover:underline",
+        success: `
+bg-emerald-500/10
+text-emerald-700
+border-emerald-300
+dark:text-emerald-300
+dark:border-emerald-800
+`,
 
-        success:
-          "border-emerald-500/20 bg-emerald-500/10 text-emerald-400",
+        warning: `
+bg-amber-500/10
+text-amber-700
+border-amber-300
+dark:text-amber-300
+dark:border-amber-800
+`,
 
-        warning:
-          "border-yellow-500/20 bg-yellow-500/10 text-yellow-400",
+        info: `
+bg-sky-500/10
+text-sky-700
+border-sky-300
+dark:text-sky-300
+dark:border-sky-800
+`,
 
-        info:
-          "border-sky-500/20 bg-sky-500/10 text-sky-400",
+        neutral: `
+bg-muted
+text-muted-foreground
+border-border
+`,
 
-        neutral:
-          "border-slate-700 bg-slate-800 text-slate-300",
+        link: `
+border-none
+bg-transparent
+p-0
+
+text-primary
+
+hover:underline
+`,
       },
     },
+
     defaultVariants: {
       variant: "default",
     },
@@ -68,20 +115,15 @@ function Badge({
   VariantProps<typeof badgeVariants> & {
     asChild?: boolean;
   }) {
-  const Comp = asChild ? Slot.Root : "span";
+  const Comp = asChild ? Slot : "span";
 
   return (
     <Comp
-      className={cn(
-        badgeVariants({ variant }),
-        className
-      )}
+      data-slot="badge"
+      className={cn(badgeVariants({ variant }), className)}
       {...props}
     />
   );
 }
 
-export {
-  Badge,
-  badgeVariants,
-};
+export { Badge, badgeVariants };

@@ -16,29 +16,42 @@ function Input({
         flex
         h-11
         w-full
-        rounded-xl
+
+        rounded-lg
         border
-        border-border
+        border-input
+
         bg-card
         px-4
-        text-[15px]
+
+        text-sm
         text-foreground
+
         placeholder:text-muted-foreground
+
+        shadow-sm
+
         transition-all
         duration-200
+
         outline-none
 
-        focus:border-primary
+        hover:border-ring/40
+
+        focus:border-ring
         focus:ring-2
-        focus:ring-primary/15
+        focus:ring-ring/20
 
         disabled:cursor-not-allowed
         disabled:opacity-50
+        disabled:bg-muted
 
         file:border-0
         file:bg-transparent
         file:text-sm
         file:font-medium
+
+        autofill:bg-card
         `,
         className
       )}

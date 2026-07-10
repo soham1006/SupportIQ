@@ -3,51 +3,48 @@
 import {
   createContext,
   useContext,
+  useMemo,
   useState,
+  type ReactNode,
 } from 'react';
 
 interface SidebarContextType {
   open: boolean;
-
-  setOpen: (
-    open: boolean,
-  ) => void;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const SidebarContext =
-  createContext<
-    SidebarContextType | undefined
-  >(undefined);
+const SidebarContext = createContext<SidebarContextType | null>(null);
+
+interface SidebarProviderProps {
+  children: ReactNode;
+}
 
 export function SidebarProvider({
   children,
-}: {
-  children: React.ReactNode;
-}) {
-  const [open, setOpen] =
-    useState(false);
+}: SidebarProviderProps) {
+  const [open, setOpen] = useState(false);
+
+  const value = useMemo(
+    () => ({
+      open,
+      setOpen,
+    }),
+    [open],
+  );
 
   return (
-    <SidebarContext.Provider
-      value={{
-        open,
-        setOpen,
-      }}
-    >
+    <SidebarContext.Provider value={value}>
       {children}
     </SidebarContext.Provider>
   );
 }
 
 export function useSidebar() {
-  const context =
-    useContext(
-      SidebarContext,
-    );
+  const context = useContext(SidebarContext);
 
   if (!context) {
     throw new Error(
-      'useSidebar must be used inside SidebarProvider',
+      'useSidebar must be used within SidebarProvider',
     );
   }
 
