@@ -1,8 +1,6 @@
 import { embeddingService } from './embedding.service';
 import { getCollection } from './chroma.service';
 
-const DISTANCE_THRESHOLD = 0.6;
-
 export class RetrievalService {
   async search(
     query: string,
@@ -25,32 +23,15 @@ export class RetrievalService {
       });
 
     const documents =
-      (
-        result.documents?.[0] ??
-        []
-      ).filter(
-        (
-          doc,
-        ): doc is string =>
-          doc !== null,
-      );
+      result.documents?.[0] ?? [];
 
     const distances =
-      (
-        result.distances?.[0] ??
-        []
-      ).filter(
-        (
-          distance,
-        ): distance is number =>
-          distance !== null,
-      );
+      result.distances?.[0] ?? [];
 
     const metadatas =
-      result.metadatas?.[0] ??
-      [];
+      result.metadatas?.[0] ?? [];
 
-    const filtered =
+    const retrieved =
       documents
         .map(
           (
@@ -67,17 +48,32 @@ export class RetrievalService {
             distance:
               distances[
                 index
-              ] ?? 999,
+              ] ?? null,
           }),
         )
         .filter(
-          item =>
-            item.distance <
-            DISTANCE_THRESHOLD,
+          (
+            item,
+          ): item is {
+            document: string;
+            metadata:
+              | Record<
+                  string,
+                  boolean |
+                    number |
+                    string
+                >
+              | null;
+            distance:
+              | number
+              | null;
+          } =>
+            item.document !==
+            null,
         );
 
     console.log(
-      '\n===== Retrieval =====',
+      '\n===== Raw Retrieval =====',
     );
 
     console.log(
@@ -85,11 +81,16 @@ export class RetrievalService {
       query,
     );
 
+    console.log(
+      'Results found:',
+      retrieved.length,
+    );
+
     if (
-      filtered.length === 0
+      retrieved.length === 0
     ) {
       console.log(
-        'No relevant chunks found.',
+        'No chunks returned by Chroma.',
       );
 
       return {
@@ -99,13 +100,13 @@ export class RetrievalService {
       };
     }
 
-    filtered.forEach(
+    retrieved.forEach(
       (
         item,
         index,
       ) => {
         console.log(
-          `Chunk ${
+          `\nChunk ${
             index + 1
           }`,
         );
@@ -116,9 +117,15 @@ export class RetrievalService {
         );
 
         console.log(
+          'Metadata:',
+          item.metadata,
+        );
+
+        console.log(
+          'Document:',
           item.document.slice(
             0,
-            120,
+            300,
           ),
         );
 
@@ -130,23 +137,29 @@ export class RetrievalService {
 
     return {
       documents:
-        filtered.map(
+        retrieved.map(
           item =>
             item.document,
         ),
 
       metadatas:
-        filtered.map(
+        retrieved.map(
           item =>
             item.metadata,
         ),
 
-      distances:
-        filtered.map(
-          item =>
-            item.distance,
-        ),
-    };
+distances:
+  retrieved
+    .map(
+      item =>
+        item.distance,
+    )
+    .filter(
+      (
+        distance,
+      ): distance is number =>
+        distance !== null,
+    ),    };
   }
 }
 

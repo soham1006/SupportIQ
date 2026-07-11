@@ -1,14 +1,14 @@
-import { ChromaClient } from "chromadb";
+import { CloudClient } from 'chromadb';
 
-export const chroma = new ChromaClient({
-  host: "localhost",
-  port: 8000,
-  ssl: false,
+export const chroma = new CloudClient({
+  apiKey: process.env.CHROMA_API_KEY!,
+  tenant: process.env.CHROMA_TENANT!,
+  database: process.env.CHROMA_DATABASE!,
 });
 
 export async function getCollection() {
   return chroma.getOrCreateCollection({
-    name: "supportiq-documents",
+    name: 'supportiq-documents',
     embeddingFunction: null as any,
   });
 }
