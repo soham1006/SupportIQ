@@ -19,10 +19,47 @@ import notificationRoutes from "./modules/notification/notification.routes";
 import chatRoutes from "./modules/chat/chat.routes";
 import customerRoutes from './modules/customer/customer.routes';
 import profileRoutes from "./modules/profile/profile.routes";
+const allowedOrigins = [
+  'http://localhost:3000',
+  process.env.CLIENT_URL,
+].filter(
+  (origin): origin is string =>
+    Boolean(origin),
+);
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: (
+      origin,
+      callback,
+    ) => {
+      // Allow requests without an Origin header
+      // such as Postman and server-to-server requests.
+      if (!origin) {
+        return callback(
+          null,
+          true,
+        );
+      }
+
+      if (
+        allowedOrigins.includes(
+          origin,
+        )
+      ) {
+        return callback(
+          null,
+          true,
+        );
+      }
+
+      return callback(
+        new Error(
+          'Not allowed by CORS',
+        ),
+      );
+    },
+
     credentials: true,
   }),
 );
