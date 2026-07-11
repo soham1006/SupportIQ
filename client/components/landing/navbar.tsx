@@ -29,7 +29,9 @@ export function LandingNavbar() {
     try {
       await logout();
 
-      toast.success('Logged out successfully');
+      toast.success(
+        'Logged out successfully',
+      );
 
       router.push('/');
     } catch (error) {
@@ -38,64 +40,24 @@ export function LandingNavbar() {
   }
 
   return (
-    <header
-      className="
-      sticky
-      top-0
-      z-50
+    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/70 supports-[backdrop-filter]:backdrop-blur-xl">
 
-      border-b
-      border-border/60
+      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-6">
 
-      bg-background/70
-
-      supports-[backdrop-filter]:backdrop-blur-xl
-      "
-    >
-      <div
-        className="
-        mx-auto
-
-        flex
-        h-18
-
-        max-w-7xl
-
-        items-center
-        justify-between
-
-        px-6
-        "
-      >
         {/* Logo */}
 
         <Link
           href="/"
           className="flex items-center gap-3"
         >
-          <div
-            className="
-            flex
-            h-10
-            w-10
 
-            items-center
-            justify-center
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-border bg-card shadow-sm">
 
-            rounded-2xl
-
-            border
-            border-border
-
-            bg-card
-
-            shadow-sm
-            "
-          >
             <Sparkles
               size={18}
               className="text-primary"
             />
+
           </div>
 
           <div>
@@ -109,6 +71,7 @@ export function LandingNavbar() {
             </p>
 
           </div>
+
         </Link>
 
         {/* Navigation */}
@@ -144,6 +107,7 @@ export function LandingNavbar() {
 
           {user ? (
             <>
+
               <Button
                 asChild
                 variant="ghost"
@@ -159,9 +123,11 @@ export function LandingNavbar() {
               >
                 Logout
               </Button>
+
             </>
           ) : (
             <>
+
               <Button
                 asChild
                 variant="ghost"
@@ -171,19 +137,19 @@ export function LandingNavbar() {
                 </Link>
               </Button>
 
-              <Button
-                asChild
-              >
+              <Button asChild>
                 <Link href="/register">
                   Get Started
                 </Link>
               </Button>
+
             </>
           )}
 
         </div>
 
       </div>
+
     </header>
   );
 }

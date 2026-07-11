@@ -1,15 +1,20 @@
 'use client';
 
-import { CreateAgentDialog } from './create-agent-dialog';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
+import { Skeleton } from '@/components/ui/skeleton';
+
 import { useAgents } from '@/features/agents/use-agents';
-import { AgentStats } from './agent-stats';
+
 import { AgentCard } from './agent-card';
+import { AgentStats } from './agent-stats';
+import { CreateAgentDialog } from './create-agent-dialog';
 
 export function AgentsPage() {
+  const {
+    data,
+    isLoading,
+  } = useAgents();
 
-    const { data, isLoading } =
-  useAgents();
   return (
     <DashboardLayout>
 
@@ -17,15 +22,15 @@ export function AgentsPage() {
 
         {/* Header */}
 
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 
           <div>
 
-            <h1 className="text-3xl font-semibold">
+            <h1 className="text-4xl font-semibold tracking-tight">
               Agents
             </h1>
 
-            <p className="mt-1 text-muted-foreground">
+            <p className="mt-2 text-muted-foreground">
               Manage your customer support team.
             </p>
 
@@ -38,16 +43,30 @@ export function AgentsPage() {
         <AgentStats />
 
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-{isLoading ? (
-  <p>Loading agents...</p>
-) : (
-  data?.data.map(agent => (
-    <AgentCard
-      key={agent.id}
-      agent={agent}
-    />
-  ))
-)}
+
+          {isLoading ? (
+
+            [...Array(6)].map((_, index) => (
+
+              <Skeleton
+                key={index}
+                className="h-[420px] rounded-3xl"
+              />
+
+            ))
+
+          ) : (
+
+            data?.data.map((agent) => (
+
+              <AgentCard
+                key={agent.id}
+                agent={agent}
+              />
+
+            ))
+
+          )}
 
         </div>
 

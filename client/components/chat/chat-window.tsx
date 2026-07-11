@@ -22,6 +22,12 @@ interface Props {
   ) => void;
 }
 
+interface ChatMessage {
+  id: string;
+  role: 'USER' | 'ASSISTANT';
+  content: string;
+}
+
 export function ChatWindow({
   conversationId,
   onConversationCreated,
@@ -42,8 +48,8 @@ export function ChatWindow({
   const chat =
     useChat();
 
-  const messages =
-    data?.data ?? [];
+const messages: ChatMessage[] =
+  data?.data ?? [];
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({

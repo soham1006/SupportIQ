@@ -3,9 +3,15 @@
 import { User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+} from '@/components/ui/card';
 
 import { useUpdateAgent } from '@/features/agents/use-update-agent';
+
 import { EditAgentDialog } from './edit-agent-dialog';
 
 interface Props {
@@ -17,155 +23,176 @@ export function AgentInfoCard({
 }: Props) {
   const router = useRouter();
 
- const updateAgent =
-  useUpdateAgent();
+  const updateAgent =
+    useUpdateAgent();
 
- async function handleToggleStatus() {
-  const action =
-    agent.isActive
-      ? 'deactivate'
-      : 'activate';
+  async function handleToggleStatus() {
+    const action =
+      agent.isActive
+        ? 'deactivate'
+        : 'activate';
 
-  const confirmed =
-    window.confirm(
-      `Are you sure you want to ${action} this agent?`,
-    );
+    const confirmed =
+      window.confirm(
+        `Are you sure you want to ${action} this agent?`,
+      );
 
-  if (!confirmed) {
-    return;
+    if (!confirmed) {
+      return;
+    }
+
+    await updateAgent.mutateAsync({
+      id: agent.id,
+      data: {
+        isActive:
+          !agent.isActive,
+      },
+    });
+
+    router.refresh();
   }
 
-  await updateAgent.mutateAsync({
-    id: agent.id,
-
-    data: {
-      isActive:
-        !agent.isActive,
-    },
-  });
-
-  router.refresh();
-}
   return (
-    <div className="rounded-2xl border border-border bg-card p-6">
+    <Card>
 
-      <div className="flex justify-center">
+      <CardContent className="p-7">
 
-        <div className="flex h-24 w-24 items-center justify-center rounded-full bg-primary/10">
+        {/* Avatar */}
 
-          <User
-            size={40}
-            className="text-primary"
-          />
+        <div className="flex flex-col items-center">
 
-        </div>
+          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-primary/10">
 
-      </div>
+            <User
+              size={42}
+              className="text-primary"
+            />
 
-      <div className="mt-6 space-y-5">
+          </div>
 
-        <div>
+          <h2 className="mt-5 text-2xl font-semibold">
 
-          <p className="text-sm text-muted-foreground">
-            Name
-          </p>
-
-          <p className="font-semibold">
             {agent.name}
-          </p>
 
-        </div>
+          </h2>
 
-        <div>
+          <p className="mt-1 text-sm text-muted-foreground">
 
-          <p className="text-sm text-muted-foreground">
-            Email
-          </p>
-
-          <p className="font-semibold">
             {agent.email}
+
           </p>
 
-        </div>
-
-        <div>
-
-          <p className="text-sm text-muted-foreground">
-            Status
-          </p>
-
-          <p className="font-semibold">
+          <Badge
+            className="mt-4"
+            variant={
+              agent.isActive
+                ? 'success'
+                : 'secondary'
+            }
+          >
             {agent.isActive
               ? 'Active'
               : 'Inactive'}
-          </p>
+          </Badge>
 
         </div>
 
-        <div>
+        {/* Details */}
 
-          <p className="text-sm text-muted-foreground">
-            Skills
-          </p>
+        <div className="mt-8 space-y-6">
 
-          <div className="mt-2 flex flex-wrap gap-2">
+          <div>
 
-            {agent.skills.length > 0 ? (
-              agent.skills.map(
-                (
-                  skill: string,
-                ) => (
-                  <span
-                    key={skill}
-                    className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary"
-                  >
-                    {skill}
-                  </span>
-                ),
-              )
-            ) : (
-              <span className="text-sm text-muted-foreground">
-                No skills
+            <p className="text-sm font-medium text-muted-foreground">
+
+              Skills
+
+            </p>
+
+            <div className="mt-3 flex flex-wrap gap-2">
+
+              {agent.skills.length ? (
+                agent.skills.map(
+                  (skill: string) => (
+                    <Badge
+                      key={skill}
+                      variant="secondary"
+                    >
+                      {skill}
+                    </Badge>
+                  ),
+                )
+              ) : (
+                <span className="text-sm text-muted-foreground">
+
+                  No skills added
+
+                </span>
+              )}
+
+            </div>
+
+          </div>
+
+          <div className="rounded-2xl border border-border bg-muted/40 p-5">
+
+            <div className="flex items-center justify-between">
+
+              <span className="text-muted-foreground">
+
+                Assigned Tickets
+
               </span>
-            )}
+
+              <span className="text-2xl font-semibold">
+
+                {agent._count?.assignedTickets ?? 0}
+
+              </span>
+
+            </div>
 
           </div>
 
         </div>
 
-       <div className="mt-8 flex gap-3">
+        {/* Actions */}
 
-  <div className="flex-1">
-    <EditAgentDialog
-      agent={agent}
-    />
-  </div>
+        <div className="mt-8 flex gap-3">
 
-  <Button
-  variant={
-    agent.isActive
-      ? 'destructive'
-      : 'default'
-  }
-  className="flex-1"
-  onClick={
-    handleToggleStatus
-  }
-  disabled={
-    updateAgent.isPending
-  }
->
-  {updateAgent.isPending
-    ? 'Saving...'
-    : agent.isActive
-    ? 'Deactivate'
-    : 'Activate'}
-</Button>
+          <div className="flex-1">
 
-</div>
+            <EditAgentDialog
+              agent={agent}
+            />
 
-      </div>
+          </div>
 
-    </div>
+          <Button
+            className="flex-1"
+            variant={
+              agent.isActive
+                ? 'destructive'
+                : 'default'
+            }
+            onClick={
+              handleToggleStatus
+            }
+            disabled={
+              updateAgent.isPending
+            }
+          >
+            {updateAgent.isPending
+              ? 'Saving...'
+              : agent.isActive
+              ? 'Deactivate'
+              : 'Activate'}
+          </Button>
+
+        </div>
+
+      </CardContent>
+
+    </Card>
   );
 }

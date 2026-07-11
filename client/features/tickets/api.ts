@@ -1,4 +1,9 @@
-import {api} from '@/lib/api';
+import { api } from '@/lib/api';
+
+import type {
+  GetTicketResponse,
+  GetTicketsResponse,
+} from './types';
 
 /* ---------------- Create Ticket ---------------- */
 
@@ -17,17 +22,22 @@ export async function createTicket(data: {
 
 /* ---------------- Tickets ---------------- */
 
-export async function getTickets() {
-  const { data } = await api.get('/tickets');
+export async function getTickets(): Promise<GetTicketsResponse> {
+  const { data } =
+    await api.get<GetTicketsResponse>(
+      '/tickets',
+    );
+
   return data;
 }
 
 export async function getTicket(
   ticketId: string,
-) {
-  const { data } = await api.get(
-    `/tickets/${ticketId}`,
-  );
+): Promise<GetTicketResponse> {
+  const { data } =
+    await api.get<GetTicketResponse>(
+      `/tickets/${ticketId}`,
+    );
 
   return data;
 }

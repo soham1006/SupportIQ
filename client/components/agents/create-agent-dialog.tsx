@@ -7,14 +7,16 @@ import { Plus } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
 
 import { Button } from '@/components/ui/button';
-
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 import { useCreateAgent } from '@/features/agents/use-create-agent';
 
@@ -52,9 +54,7 @@ export function CreateAgentDialog() {
       password,
       skills: skills
         .split(',')
-        .map(skill =>
-          skill.trim(),
-        )
+        .map((skill) => skill.trim())
         .filter(Boolean),
     });
 
@@ -83,73 +83,120 @@ export function CreateAgentDialog() {
 
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-xl">
 
         <DialogHeader>
 
           <DialogTitle>
+
             Create Agent
+
           </DialogTitle>
+
+          <DialogDescription>
+
+            Invite a new support agent and assign their primary skills.
+
+          </DialogDescription>
 
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-5">
 
-          <Input
-            placeholder="Full Name"
-            value={name}
-            onChange={e =>
-              setName(
-                e.target.value,
-              )
-            }
-          />
+          <div className="space-y-2">
 
-          <Input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={e =>
-              setEmail(
-                e.target.value,
-              )
-            }
-          />
+            <Label>
 
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={e =>
-              setPassword(
-                e.target.value,
-              )
-            }
-          />
+              Full Name
 
-          <Input
-            placeholder="Skills (React, Node.js, SQL)"
-            value={skills}
-            onChange={e =>
-              setSkills(
-                e.target.value,
-              )
-            }
-          />
+            </Label>
+
+            <Input
+              placeholder="John Doe"
+              value={name}
+              onChange={(e) =>
+                setName(e.target.value)
+              }
+            />
+
+          </div>
+
+          <div className="space-y-2">
+
+            <Label>
+
+              Email Address
+
+            </Label>
+
+            <Input
+              type="email"
+              placeholder="john@example.com"
+              value={email}
+              onChange={(e) =>
+                setEmail(e.target.value)
+              }
+            />
+
+          </div>
+
+          <div className="space-y-2">
+
+            <Label>
+
+              Password
+
+            </Label>
+
+            <Input
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) =>
+                setPassword(e.target.value)
+              }
+            />
+
+          </div>
+
+          <div className="space-y-2">
+
+            <Label>
+
+              Skills
+
+            </Label>
+
+            <Input
+              placeholder="React, Node.js, PostgreSQL"
+              value={skills}
+              onChange={(e) =>
+                setSkills(e.target.value)
+              }
+            />
+
+            <p className="text-xs text-muted-foreground">
+
+              Separate multiple skills with commas.
+
+            </p>
+
+          </div>
+
+        </div>
+
+        <DialogFooter showCloseButton>
 
           <Button
-            className="w-full"
             onClick={handleSubmit}
-            disabled={
-              createAgent.isPending
-            }
+            disabled={createAgent.isPending}
           >
             {createAgent.isPending
               ? 'Creating...'
               : 'Create Agent'}
           </Button>
 
-        </div>
+        </DialogFooter>
 
       </DialogContent>
 

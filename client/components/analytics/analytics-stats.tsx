@@ -3,29 +3,31 @@
 import {
   FileText,
   Ticket,
-  Users,
   TrendingUp,
+  Users,
 } from 'lucide-react';
 
-import { Card } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+} from '@/components/ui/card';
 
 import { useOverview } from '@/features/analytics/use-overview';
 
 export function AnalyticsStats() {
-  const { data, isLoading } =
-    useOverview();
+  const {
+    data,
+    isLoading,
+  } = useOverview();
 
   if (isLoading) {
     return (
       <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
 
-        {Array.from({
-          length: 4,
-        }).map((_, index) => (
-          <Card
-            key={index}
-            className="h-36 animate-pulse"
-          />
+        {[1, 2, 3, 4].map((i) => (
+          <Card key={i}>
+            <CardContent className="h-40 animate-pulse" />
+          </Card>
         ))}
 
       </div>
@@ -35,29 +37,22 @@ export function AnalyticsStats() {
   const stats = [
     {
       title: 'Total Tickets',
-      value:
-        data?.data.totalTickets ?? 0,
+      value: data?.data.totalTickets ?? 0,
       icon: Ticket,
     },
     {
       title: 'Resolution Rate',
-      value: `${
-        data?.data
-          .resolutionRate ?? 0
-      }%`,
+      value: `${data?.data.resolutionRate ?? 0}%`,
       icon: TrendingUp,
     },
     {
       title: 'Active Agents',
-      value:
-        data?.data.totalAgents ?? 0,
+      value: data?.data.totalAgents ?? 0,
       icon: Users,
     },
     {
-      title: 'Knowledge Documents',
-      value:
-        data?.data
-          .totalDocuments ?? 0,
+      title: 'Knowledge Docs',
+      value: data?.data.totalDocuments ?? 0,
       icon: FileText,
     },
   ];
@@ -65,46 +60,65 @@ export function AnalyticsStats() {
   return (
     <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
 
-      {stats.map(stat => {
+      {stats.map((stat) => {
 
-        const Icon =
-          stat.icon;
+        const Icon = stat.icon;
 
         return (
 
           <Card
             key={stat.title}
-            className="border-border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+            className="
+              group
+              overflow-hidden
+              transition-all
+              duration-300
+              hover:-translate-y-1
+              hover:shadow-lg
+            "
           >
 
-            <div className="flex items-center justify-between p-6">
+            <CardContent className="relative p-7">
 
-              <div>
+              {/* Soft Glow */}
 
-                <p className="text-sm text-muted-foreground">
-                  {stat.title}
-                </p>
+              <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-primary/5 blur-3xl opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-                <h2 className="mt-3 text-3xl font-bold">
-                  {stat.value}
-                </h2>
+              <div className="relative flex items-start justify-between">
+
+                <div>
+
+                  <p className="text-sm font-medium uppercase tracking-[0.15em] text-muted-foreground">
+
+                    {stat.title}
+
+                  </p>
+
+                  <h2 className="mt-5 text-4xl font-semibold tracking-tight">
+
+                    {stat.value}
+
+                  </h2>
+
+                </div>
+
+                <div className="rounded-2xl bg-primary/10 p-4 transition-all duration-300 group-hover:scale-105">
+
+                  <Icon
+                    size={26}
+                    className="text-primary"
+                  />
+
+                </div>
 
               </div>
 
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-
-                <Icon
-                  className="text-primary"
-                  size={24}
-                />
-
-              </div>
-
-            </div>
+            </CardContent>
 
           </Card>
 
         );
+
       })}
 
     </div>

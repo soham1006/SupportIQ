@@ -1,20 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
 
-import {api} from '@/lib/api';
+import { getTicket } from './api';
 
 export function useTicket(
-  id: string,
+  ticketId: string,
 ) {
   return useQuery({
-    queryKey: ['ticket', id],
+    queryKey: [
+      'ticket',
+      ticketId,
+    ],
 
-    queryFn: async () => {
-      const { data } =
-        await api.get(`/tickets/${id}`);
+    queryFn: () =>
+      getTicket(ticketId),
 
-      return data;
-    },
-
-    enabled: !!id,
+    enabled: !!ticketId,
   });
 }

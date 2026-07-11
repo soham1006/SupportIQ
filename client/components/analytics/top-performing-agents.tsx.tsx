@@ -5,6 +5,7 @@ import {
   Award,
   Mail,
   Trophy,
+  User,
 } from 'lucide-react';
 
 import { useRouter } from 'next/navigation';
@@ -13,7 +14,7 @@ import { Card } from '@/components/ui/card';
 
 import { useTopAgents } from '@/features/analytics/use-top-agents';
 
-export function TopPerformingAgents () {
+export function TopPerformingAgents() {
   const router = useRouter();
 
   const {
@@ -23,27 +24,38 @@ export function TopPerformingAgents () {
 
   if (isLoading) {
     return (
-      <Card className="p-6">
-        <div className="text-muted-foreground">
-          Loading...
+      <Card className="p-8">
+        <div className="space-y-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="h-24 animate-pulse rounded-2xl bg-muted"
+            />
+          ))}
         </div>
       </Card>
     );
   }
 
   return (
-    <Card className="p-6">
+    <Card className="p-8">
 
-      <div className="mb-6 flex items-center justify-between">
+      {/* Header */}
+
+      <div className="mb-8 flex items-center justify-between">
 
         <div>
 
-          <h2 className="text-xl font-semibold">
+          <h2 className="text-2xl font-semibold tracking-tight">
+
             Top Performing Agents
+
           </h2>
 
-          <p className="mt-1 text-sm text-muted-foreground">
-            Ranked by resolved tickets.
+          <p className="mt-2 text-muted-foreground">
+
+            Ranked by successfully resolved support tickets.
+
           </p>
 
         </div>
@@ -52,75 +64,143 @@ export function TopPerformingAgents () {
           onClick={() =>
             router.push('/agents')
           }
-          className="flex items-center gap-2 rounded-xl border border-border px-4 py-2 text-sm transition hover:border-primary hover:text-primary"
+          className="
+            flex
+            items-center
+            gap-2
+            rounded-2xl
+            border
+            border-border
+            bg-background
+            px-5
+            py-3
+            text-sm
+            font-medium
+            transition-all
+            hover:border-primary
+            hover:text-primary
+          "
         >
+
           View All
 
           <ArrowRight size={16} />
+
         </button>
 
       </div>
 
-      <div className="space-y-4">
+      {/* Leaderboard */}
 
-        {data?.data.map(
-          (agent, index) => (
-            <div
-              key={agent.id}
-              className="flex items-center justify-between rounded-xl border border-border p-4 transition hover:border-primary/40"
-            >
+      <div className="space-y-5">
 
-              <div className="flex items-center gap-4">
+        {data?.data.map((agent, index) => (
 
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10">
+          <div
+            key={agent.id}
+            className="
+              group
+              flex
+              items-center
+              justify-between
+              rounded-3xl
+              border
+              border-border
+              bg-background
+              p-6
+              transition-all
+              duration-300
+              hover:-translate-y-1
+              hover:border-primary/30
+              hover:shadow-lg
+            "
+          >
 
-                  {index === 0 ? (
-                    <Trophy
-                      size={20}
-                      className="text-yellow-500"
-                    />
-                  ) : (
-                    <Award
-                      size={20}
-                      className="text-primary"
-                    />
-                  )}
+            <div className="flex items-center gap-5">
 
-                </div>
+              <div
+                className="
+                  flex
+                  h-14
+                  w-14
+                  items-center
+                  justify-center
+                  rounded-2xl
+                  bg-primary/10
+                "
+              >
 
-                <div>
+                {index === 0 ? (
 
-                  <p className="font-semibold">
-                    {agent.name}
-                  </p>
+                  <Trophy
+                    size={24}
+                    className="text-amber-500"
+                  />
 
-                  <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+                ) : index === 1 ? (
 
-                    <Mail size={14} />
+                  <Award
+                    size={24}
+                    className="text-slate-400"
+                  />
 
-                    {agent.email}
+                ) : index === 2 ? (
 
-                  </div>
+                  <Award
+                    size={24}
+                    className="text-orange-500"
+                  />
 
-                </div>
+                ) : (
+
+                  <User
+                    size={24}
+                    className="text-primary"
+                  />
+
+                )}
 
               </div>
 
-              <div className="text-right">
+              <div>
 
-                <p className="text-2xl font-bold text-primary">
-                  {agent.resolved}
-                </p>
+                <h3 className="text-lg font-semibold">
 
-                <p className="text-sm text-muted-foreground">
-                  Resolved
-                </p>
+                  {agent.name}
+
+                </h3>
+
+                <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+
+                  <Mail size={14} />
+
+                  {agent.email}
+
+                </div>
 
               </div>
 
             </div>
-          ),
-        )}
+
+            <div className="text-right">
+
+              <p className="text-4xl font-semibold tracking-tight">
+
+                {agent.resolved}
+
+              </p>
+
+              <p className="mt-1 text-sm text-muted-foreground">
+
+                Tickets Resolved
+
+              </p>
+
+            </div>
+
+          </div>
+
+        ))}
 
       </div>
 

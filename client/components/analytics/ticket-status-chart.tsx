@@ -1,6 +1,11 @@
 'use client';
 
 import {
+  Activity,
+  PieChart as PieChartIcon,
+} from 'lucide-react';
+
+import {
   Cell,
   Pie,
   PieChart,
@@ -8,15 +13,18 @@ import {
   Tooltip,
 } from 'recharts';
 
-import { Card } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+} from '@/components/ui/card';
 
 import { useTicketStatus } from '@/features/analytics/use-ticket-status';
 
 const COLORS = [
-  '#22c55e',
-  '#3b82f6',
-  '#f59e0b',
-  '#ef4444',
+  '#78716c',
+  '#a8a29e',
+  '#d6d3d1',
+  'var(--primary)',
 ];
 
 export function TicketStatusChart() {
@@ -27,102 +35,178 @@ export function TicketStatusChart() {
 
   if (isLoading) {
     return (
-      <Card className="flex h-[480px] items-center justify-center">
-        Loading...
+      <Card>
+
+        <CardContent className="flex h-[420px] items-center justify-center text-muted-foreground">
+
+          Loading chart...
+
+        </CardContent>
+
       </Card>
     );
   }
 
   const chartData =
-    data?.data.map(item => ({
-      name: item.status
-        .replace('_', ' '),
+    data?.data.map((item) => ({
+      name: item.status.replace('_', ' '),
       value: item.count,
     })) ?? [];
 
+  const total = chartData.reduce(
+    (sum, item) => sum + item.value,
+    0,
+  );
+
   return (
-    <Card className="p-6">
+    <Card>
 
-      <h2 className="mb-6 text-xl font-semibold">
-        Ticket Status Distribution
-      </h2>
+      <CardContent className="p-8">
 
-      <ResponsiveContainer
-        width="100%"
-        height={320}
-      >
+        <div className="mb-8 flex items-center justify-between">
 
-        <PieChart>
+          <div>
 
-          <Pie
-            data={chartData}
-            dataKey="value"
-            nameKey="name"
-            innerRadius={70}
-            outerRadius={110}
-            paddingAngle={3}
-          >
+            <div className="mb-3 flex items-center gap-3">
 
-            {chartData.map(
-              (entry, index) => (
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10">
 
-                <Cell
-                  key={entry.name}
-                  fill={
-                    COLORS[
-                      index %
-                        COLORS.length
-                    ]
-                  }
+                <PieChartIcon
+                  size={20}
+                  className="text-primary"
                 />
 
-              ),
-            )}
+              </div>
 
-          </Pie>
+              <div>
 
-          <Tooltip />
+                <h2 className="text-2xl font-semibold">
 
-        </PieChart>
+                  Ticket Status
 
-      </ResponsiveContainer>
+                </h2>
 
-      <div className="mt-6 space-y-3">
+                <p className="text-sm text-muted-foreground">
 
-        {chartData.map(
-          (item, index) => (
+                  Current distribution
 
-            <div
-              key={item.name}
-              className="flex items-center justify-between"
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div className="flex items-center gap-2 rounded-2xl border border-border bg-background px-4 py-2">
+
+            <Activity
+              size={16}
+              className="text-primary"
+            />
+
+            <span className="text-sm font-medium">
+
+              {total}
+
+            </span>
+
+          </div>
+
+        </div>
+
+        <ResponsiveContainer
+          width="100%"
+          height={320}
+        >
+
+          <PieChart>
+
+            <Pie
+              data={chartData}
+              dataKey="value"
+              nameKey="name"
+              innerRadius={78}
+              outerRadius={110}
+              paddingAngle={5}
             >
 
-              <div className="flex items-center gap-3">
+              {chartData.map(
+                (entry, index) => (
 
-                <span
-                  className="h-3 w-3 rounded-full"
-                  style={{
-                    backgroundColor:
-                      COLORS[index],
-                  }}
-                />
+                  <Cell
+                    key={entry.name}
+                    fill={
+                      COLORS[
+                        index %
+                          COLORS.length
+                      ]
+                    }
+                  />
 
-                <span className="text-sm">
-                  {item.name}
+                ),
+              )}
+
+            </Pie>
+
+            <Tooltip
+              contentStyle={{
+                background:
+                  'var(--card)',
+                border:
+                  '1px solid var(--border)',
+                borderRadius: 16,
+                color:
+                  'var(--foreground)',
+              }}
+            />
+
+          </PieChart>
+
+        </ResponsiveContainer>
+
+        <div className="mt-8 space-y-4">
+
+          {chartData.map(
+            (item, index) => (
+
+              <div
+                key={item.name}
+                className="flex items-center justify-between rounded-xl border border-border bg-background px-4 py-3"
+              >
+
+                <div className="flex items-center gap-3">
+
+                  <span
+                    className="h-3 w-3 rounded-full"
+                    style={{
+                      backgroundColor:
+                        COLORS[index],
+                    }}
+                  />
+
+                  <span className="font-medium">
+
+                    {item.name}
+
+                  </span>
+
+                </div>
+
+                <span className="text-lg font-semibold">
+
+                  {item.value}
+
                 </span>
 
               </div>
 
-              <span className="font-medium">
-                {item.value}
-              </span>
+            ),
+          )}
 
-            </div>
+        </div>
 
-          ),
-        )}
-
-      </div>
+      </CardContent>
 
     </Card>
   );

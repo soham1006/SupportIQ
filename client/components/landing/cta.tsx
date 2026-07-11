@@ -9,89 +9,36 @@ import {
 
 import { Button } from '@/components/ui/button';
 
+import { useAuth } from '@/features/auth/use-auth';
+
 export function CTA() {
+  const { user } = useAuth();
+
+  const dashboardHref =
+    user?.role === 'ADMIN'
+      ? '/dashboard/admin'
+      : user?.role === 'AGENT'
+        ? '/dashboard/agent'
+        : '/dashboard/customer';
+
   return (
     <section className="py-28">
 
       <div className="mx-auto max-w-7xl px-6">
 
-        <div
-          className="
-          relative
-
-          overflow-hidden
-
-          rounded-[2rem]
-
-          border
-          border-border
-
-          bg-primary
-
-          px-8
-          py-20
-
-          text-center
-
-          text-primary-foreground
-
-          shadow-2xl
-          "
-        >
+        <div className="relative overflow-hidden rounded-[2rem] border border-border bg-primary px-8 py-20 text-center text-primary-foreground shadow-2xl">
 
           {/* Glow */}
 
-          <div
-            className="
-            absolute
-            inset-0
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,.16),transparent_60%)]" />
 
-            bg-[radial-gradient(circle_at_top,rgba(255,255,255,.16),transparent_60%)]
-            "
-          />
-
-          <div
-            className="
-            absolute
-
-            -right-32
-            -top-32
-
-            h-80
-            w-80
-
-            rounded-full
-
-            bg-white/10
-
-            blur-3xl
-            "
-          />
+          <div className="absolute -right-32 -top-32 h-80 w-80 rounded-full bg-white/10 blur-3xl" />
 
           <div className="relative">
 
             {/* Badge */}
 
-            <div
-              className="
-              mb-8
-
-              inline-flex
-
-              items-center
-              gap-2
-
-              rounded-full
-
-              border
-              border-white/20
-
-              bg-white/10
-
-              px-5
-              py-2.5
-              "
-            >
+            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2.5">
 
               <Sparkles size={15} />
 
@@ -103,23 +50,7 @@ export function CTA() {
 
             {/* Heading */}
 
-            <h2
-              className="
-              mx-auto
-
-              max-w-4xl
-
-              text-4xl
-
-              font-semibold
-
-              leading-tight
-
-              tracking-tight
-
-              md:text-6xl
-              "
-            >
+            <h2 className="mx-auto max-w-4xl text-4xl font-semibold leading-tight tracking-tight md:text-6xl">
 
               Ready to transform your customer support?
 
@@ -127,68 +58,62 @@ export function CTA() {
 
             {/* Description */}
 
-            <p
-              className="
-              mx-auto
-
-              mt-6
-
-              max-w-3xl
-
-              text-lg
-
-              leading-8
-
-              text-primary-foreground/80
-              "
-            >
+            <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-primary-foreground/80">
 
               Upload your knowledge base, answer customer questions instantly,
               and seamlessly hand complex conversations to your support team.
 
             </p>
 
-            {/* Buttons */}
+            {/* Actions */}
 
             <div className="mt-12 flex flex-col justify-center gap-4 sm:flex-row">
 
-              <Button
-                asChild
-                variant="secondary"
-                size="lg"
-              >
+              {user ? (
 
-                <Link href="/register">
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-background text-foreground hover:bg-background/90"
+                >
+                  <Link href={dashboardHref}>
 
-                  Get Started
+                    Go to Dashboard
 
-                  <ArrowRight size={18} />
+                    <ArrowRight size={18} />
 
-                </Link>
+                  </Link>
+                </Button>
 
-              </Button>
+              ) : (
+                <>
 
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="
-                  border-white/25
+                  <Button
+                    asChild
+                    size="lg"
+                    className="bg-white text-stone-900 hover:bg-stone-100 hover:text-stone-900"
+                  >
+                    <Link href="/register">
 
-                  bg-transparent
+                      Get Started
 
-                  text-white
+                      <ArrowRight size={18} />
 
-                  hover:bg-white/10
-                  hover:text-white
-                "
-              >
+                    </Link>
+                  </Button>
 
-                <Link href="/login">
-                  Login
-                </Link>
+                  <Button
+                    asChild
+                    size="lg"
+                    className="border border-black/40 bg-transparent text-black shadow-none hover:bg-white/10 hover:text-white"
+                  >
+                    <Link href="/login">
+                      Login
+                    </Link>
+                  </Button>
 
-              </Button>
+                </>
+              )}
 
             </div>
 

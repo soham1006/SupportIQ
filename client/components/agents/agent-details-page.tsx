@@ -1,10 +1,18 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
+import {
+  ArrowLeft,
+  User,
+} from 'lucide-react';
+
+import {
+  useParams,
+  useRouter,
+} from 'next/navigation';
 
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 
 import { useAgent } from '@/features/agents/use-agent';
 
@@ -26,9 +34,21 @@ export function AgentDetailsPage() {
   if (isLoading) {
     return (
       <DashboardLayout>
-        <div className="flex h-[70vh] items-center justify-center">
-          Loading agent...
+
+        <div className="space-y-8">
+
+          <Skeleton className="h-10 w-44" />
+
+          <div className="grid gap-6 xl:grid-cols-[340px_1fr]">
+
+            <Skeleton className="h-[520px]" />
+
+            <Skeleton className="h-[520px]" />
+
+          </div>
+
         </div>
+
       </DashboardLayout>
     );
   }
@@ -36,9 +56,37 @@ export function AgentDetailsPage() {
   if (!agent) {
     return (
       <DashboardLayout>
-        <div className="flex h-[70vh] items-center justify-center">
-          Agent not found.
+
+        <div className="flex h-[60vh] flex-col items-center justify-center">
+
+          <User
+            size={48}
+            className="text-muted-foreground"
+          />
+
+          <h2 className="mt-5 text-2xl font-semibold">
+
+            Agent not found
+
+          </h2>
+
+          <p className="mt-2 text-muted-foreground">
+
+            The requested agent does not exist.
+
+          </p>
+
+          <Button
+            className="mt-6"
+            onClick={() =>
+              router.push('/agents')
+            }
+          >
+            Back to Agents
+          </Button>
+
         </div>
+
       </DashboardLayout>
     );
   }
@@ -48,40 +96,51 @@ export function AgentDetailsPage() {
 
       <div className="space-y-8">
 
+        {/* Header */}
+
         <div>
 
           <Button
             variant="ghost"
+            className="-ml-2"
             onClick={() =>
               router.push('/agents')
             }
           >
             <ArrowLeft size={18} />
 
-            Back
+            Back to Agents
 
           </Button>
 
-          <h1 className="mt-4 text-3xl font-bold">
-            {agent.name}
-          </h1>
+          <div className="mt-5">
 
-          <p className="text-muted-foreground">
-            {agent.email}
-          </p>
+            <h1 className="text-4xl font-semibold tracking-tight">
+
+              {agent.name}
+
+            </h1>
+
+            <p className="mt-2 text-muted-foreground">
+
+              {agent.email}
+
+            </p>
+
+          </div>
 
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-[350px_1fr]">
+        {/* Content */}
+
+        <div className="grid gap-6 xl:grid-cols-[340px_1fr]">
 
           <AgentInfoCard
             agent={agent}
           />
 
           <AssignedTicketsCard
-            tickets={
-              agent.assignedTickets
-            }
+            tickets={agent.assignedTickets}
           />
 
         </div>

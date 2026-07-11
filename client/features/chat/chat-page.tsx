@@ -63,7 +63,7 @@ export function ChatPage() {
     try {
       const response =
         await chatMutation.mutateAsync({
-          message: text,
+          question: text,
         });
 
       setMessages(prev => [
@@ -71,20 +71,21 @@ export function ChatPage() {
         {
           role: 'assistant',
           message:
-            response.data.data.answer,
+  response.data.answer,
 
-          confidence:
-            response.data.data.confidence,
+confidence:
+  response.data.confidence,
 
-          shouldEscalate:
-            response.data.data
-              .shouldEscalate,
+shouldEscalate:
+  response.data.shouldEscalate,
 
-          ticket:
-            response.data.data.ticket,
+ticket:
+  response.data.ticket,
 
-          sources:
-            response.data.data.sources,
+sources:
+  response.data.sources.map(
+    source => source.document,
+  ),
         },
       ]);
     } catch {

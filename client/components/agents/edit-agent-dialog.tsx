@@ -5,6 +5,8 @@ import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -12,6 +14,7 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 import { useUpdateAgent } from '@/features/agents/use-update-agent';
 
@@ -44,7 +47,6 @@ export function EditAgentDialog({
   const updateAgent =
     useUpdateAgent();
 
-
   async function handleSave() {
     await updateAgent.mutateAsync({
       id: agent.id,
@@ -56,7 +58,7 @@ export function EditAgentDialog({
 
         skills: skills
           .split(',')
-          .map(skill =>
+          .map((skill) =>
             skill.trim(),
           )
           .filter(Boolean),
@@ -67,75 +69,133 @@ export function EditAgentDialog({
   }
 
   return (
-   <Dialog
-  open={open}
-  onOpenChange={value => {
-    if (value) {
-      setName(agent.name);
-      setSkills(agent.skills.join(', '));
-      setIsActive(agent.isActive);
-    }
+    <Dialog
+      open={open}
+      onOpenChange={(value) => {
+        if (value) {
+          setName(agent.name);
+          setSkills(
+            agent.skills.join(', '),
+          );
+          setIsActive(
+            agent.isActive,
+          );
+        }
 
-    setOpen(value);
-  }}
->
+        setOpen(value);
+      }}
+    >
       <DialogTrigger asChild>
 
         <Button variant="outline">
+
           Edit Agent
+
         </Button>
 
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="sm:max-w-xl">
 
         <DialogHeader>
 
           <DialogTitle>
+
             Edit Agent
+
           </DialogTitle>
+
+          <DialogDescription>
+
+            Update the agents information, skills and availability.
+
+          </DialogDescription>
 
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-5">
 
-          <Input
-            value={name}
-            onChange={e =>
-              setName(
-                e.target.value,
-              )
-            }
-          />
+          <div className="space-y-2">
 
-          <Input
-            value={skills}
-            onChange={e =>
-              setSkills(
-                e.target.value,
-              )
-            }
-            placeholder="React, Node.js..."
-          />
+            <Label>
 
-          <label className="flex items-center gap-3">
+              Full Name
 
-            <input
-              type="checkbox"
-              checked={isActive}
-              onChange={e =>
-                setIsActive(
-                  e.target.checked,
+            </Label>
+
+            <Input
+              value={name}
+              onChange={(e) =>
+                setName(
+                  e.target.value,
                 )
               }
             />
 
-            Active
+          </div>
 
-          </label>
+          <div className="space-y-2">
+
+            <Label>
+
+              Skills
+
+            </Label>
+
+            <Input
+              value={skills}
+              placeholder="React, Node.js, PostgreSQL"
+              onChange={(e) =>
+                setSkills(
+                  e.target.value,
+                )
+              }
+            />
+
+            <p className="text-xs text-muted-foreground">
+
+              Separate multiple skills with commas.
+
+            </p>
+
+          </div>
+
+          <div className="flex items-center justify-between rounded-xl border border-border bg-muted/40 px-4 py-3">
+
+            <div>
+
+              <p className="font-medium">
+
+                Active Status
+
+              </p>
+
+              <p className="text-sm text-muted-foreground">
+
+                Allow this agent to receive new tickets.
+
+              </p>
+
+            </div>
+
+            <input
+              type="checkbox"
+              checked={isActive}
+              onChange={(e) =>
+                setIsActive(
+                  e.target.checked,
+                )
+              }
+              className="h-4 w-4 accent-primary"
+            />
+
+          </div>
+
+        </div>
+
+        <DialogFooter showCloseButton>
 
           <Button
-            className="w-full"
             onClick={handleSave}
             disabled={
               updateAgent.isPending
@@ -146,7 +206,7 @@ export function EditAgentDialog({
               : 'Save Changes'}
           </Button>
 
-        </div>
+        </DialogFooter>
 
       </DialogContent>
 

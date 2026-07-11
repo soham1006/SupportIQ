@@ -7,19 +7,29 @@ import {
   TrendingUp,
 } from 'lucide-react';
 
-import { Card } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+} from '@/components/ui/card';
 
 import { useOverview } from '@/features/analytics/use-overview';
 
 export function PerformanceMetrics() {
-  const { data, isLoading } =
-    useOverview();
+  const {
+    data,
+    isLoading,
+  } = useOverview();
 
   if (isLoading) {
     return (
-      <div className="grid gap-6 xl:grid-cols-2">
-        <Card className="h-80 animate-pulse" />
-        <Card className="h-80 animate-pulse" />
+      <div className="grid gap-8 xl:grid-cols-2">
+
+        {[1, 2].map((i) => (
+          <Card key={i}>
+            <CardContent className="h-80 animate-pulse" />
+          </Card>
+        ))}
+
       </div>
     );
   }
@@ -39,134 +49,186 @@ export function PerformanceMetrics() {
     {
       label: 'Open Tickets',
       value: data?.data.openTickets ?? 0,
+      icon: Clock3,
     },
     {
       label: 'Closed Tickets',
       value: data?.data.closedTickets ?? 0,
+      icon: CheckCircle,
     },
   ];
 
   return (
-    <div className="grid gap-6 xl:grid-cols-2">
+    <div className="grid gap-8 xl:grid-cols-2">
 
-      <Card className="p-6">
+      {/* AI */}
 
-        <div className="mb-6 flex items-center gap-3">
+      <Card>
 
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10">
+        <CardContent className="p-8">
 
-            <Brain
-              size={22}
-              className="text-primary"
-            />
+          <div className="mb-8 flex items-center gap-4">
 
-          </div>
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
 
-          <div>
-
-            <h2 className="text-xl font-semibold">
-              AI Metrics
-            </h2>
-
-            <p className="text-sm text-muted-foreground">
-              AI performance overview.
-            </p>
-
-          </div>
-
-        </div>
-
-        <div className="space-y-5">
-
-          {aiMetrics.map(metric => (
-
-            <div
-              key={metric.label}
-              className="flex items-center justify-between rounded-xl bg-muted/40 p-4"
-            >
-
-              <span className="text-muted-foreground">
-                {metric.label}
-              </span>
-
-              <span className="font-semibold text-primary">
-                {metric.value}
-              </span>
+              <Brain
+                size={22}
+                className="text-primary"
+              />
 
             </div>
 
-          ))}
+            <div>
 
-        </div>
+              <h2 className="text-2xl font-semibold">
 
-      </Card>
+                AI Performance
 
-      <Card className="p-6">
+              </h2>
 
-        <div className="mb-6 flex items-center gap-3">
+              <p className="text-sm text-muted-foreground">
 
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10">
+                Model quality & automation metrics
 
-            <TrendingUp
-              size={22}
-              className="text-primary"
-            />
+              </p>
 
-          </div>
-
-          <div>
-
-            <h2 className="text-xl font-semibold">
-              Ticket Metrics
-            </h2>
-
-            <p className="text-sm text-muted-foreground">
-              Current support workload.
-            </p>
+            </div>
 
           </div>
 
-        </div>
+          <div className="space-y-5">
 
-        <div className="space-y-5">
+            {aiMetrics.map((metric) => (
 
-          {ticketMetrics.map(metric => (
-
-            <div
-              key={metric.label}
-              className="flex items-center justify-between rounded-xl bg-muted/40 p-4"
-            >
-
-              <div className="flex items-center gap-2">
-
-                {metric.label ===
-                'Open Tickets' ? (
-                  <Clock3
-                    size={16}
-                    className="text-primary"
-                  />
-                ) : (
-                  <CheckCircle
-                    size={16}
-                    className="text-primary"
-                  />
-                )}
+              <div
+                key={metric.label}
+                className="
+                  flex
+                  items-center
+                  justify-between
+                  rounded-2xl
+                  border
+                  border-border
+                  bg-background
+                  px-5
+                  py-5
+                "
+              >
 
                 <span className="text-muted-foreground">
+
                   {metric.label}
+
+                </span>
+
+                <span className="text-2xl font-semibold text-primary">
+
+                  {metric.value}
+
                 </span>
 
               </div>
 
-              <span className="font-semibold">
-                {metric.value}
-              </span>
+            ))}
+
+          </div>
+
+        </CardContent>
+
+      </Card>
+
+      {/* Tickets */}
+
+      <Card>
+
+        <CardContent className="p-8">
+
+          <div className="mb-8 flex items-center gap-4">
+
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
+
+              <TrendingUp
+                size={22}
+                className="text-primary"
+              />
 
             </div>
 
-          ))}
+            <div>
 
-        </div>
+              <h2 className="text-2xl font-semibold">
+
+                Ticket Overview
+
+              </h2>
+
+              <p className="text-sm text-muted-foreground">
+
+                Current support workload
+
+              </p>
+
+            </div>
+
+          </div>
+
+          <div className="space-y-5">
+
+            {ticketMetrics.map((metric) => {
+
+              const Icon = metric.icon;
+
+              return (
+
+                <div
+                  key={metric.label}
+                  className="
+                    flex
+                    items-center
+                    justify-between
+                    rounded-2xl
+                    border
+                    border-border
+                    bg-background
+                    px-5
+                    py-5
+                  "
+                >
+
+                  <div className="flex items-center gap-3">
+
+                    <div className="rounded-xl bg-primary/10 p-2">
+
+                      <Icon
+                        size={16}
+                        className="text-primary"
+                      />
+
+                    </div>
+
+                    <span className="text-muted-foreground">
+
+                      {metric.label}
+
+                    </span>
+
+                  </div>
+
+                  <span className="text-2xl font-semibold">
+
+                    {metric.value}
+
+                  </span>
+
+                </div>
+
+              );
+
+            })}
+
+          </div>
+
+        </CardContent>
 
       </Card>
 

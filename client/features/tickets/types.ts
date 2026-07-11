@@ -31,7 +31,38 @@ export interface Ticket {
   createdAt: string;
 }
 
+export interface TicketReply {
+  id: string;
+  message: string;
+  createdAt: string;
+
+  user: {
+    id: string;
+    name: string;
+    role:
+      | 'ADMIN'
+      | 'AGENT'
+      | 'CUSTOMER';
+  };
+}
+
+export interface TicketDetails
+  extends Ticket {
+  description: string;
+
+  assignedAgent?: Agent | null;
+
+  replies: TicketReply[];
+
+  updatedAt?: string;
+}
+
 export interface GetTicketsResponse {
   success: boolean;
   data: Ticket[];
+}
+
+export interface GetTicketResponse {
+  success: boolean;
+  data: TicketDetails;
 }
