@@ -14,38 +14,29 @@ export function GuestGuard({
 }: Props) {
   const router = useRouter();
 
-  const {
-    user,
-    loading,
-  } = useAuth();
+  const { user, loading } = useAuth();
 
   useEffect(() => {
     if (loading || !user) {
       return;
     }
 
-    switch (user.role) {
-      case 'ADMIN':
-        router.replace('/dashboard/admin');
-        break;
+    const dashboardHref =
+      user.role === 'ADMIN'
+        ? '/dashboard/admin'
+        : user.role === 'AGENT'
+          ? '/dashboard/agent'
+          : '/dashboard/customer';
 
-      case 'AGENT':
-        router.replace('/dashboard/agent');
-        break;
-
-      default:
-        router.replace('/dashboard/customer');
-    }
-  }, [
-    user,
-    loading,
-    router,
-  ]);
+    router.replace(dashboardHref);
+  }, [user, loading, router]);
 
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        Loading...
+        <p className="text-sm text-muted-foreground">
+          Loading...
+        </p>
       </div>
     );
   }
@@ -54,5 +45,5 @@ export function GuestGuard({
     return null;
   }
 
-  return children;
+  return <>{children}</>;
 }

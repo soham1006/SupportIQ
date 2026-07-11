@@ -20,155 +20,151 @@ export function ProfileCard({
   profile,
 }: Props) {
   const initials = profile.name
-    .split(' ')
-    .map((word) => word[0])
+    .trim()
+    .split(/\s+/)
+    .map(word => word[0])
     .join('')
+    .slice(0, 2)
     .toUpperCase();
 
-  const badgeColor =
+  const roleLabel =
     profile.role === 'ADMIN'
-      ? 'bg-emerald-500 hover:bg-emerald-500'
+      ? 'Administrator'
       : profile.role === 'AGENT'
-        ? 'bg-primary-400 hover:bg-primary-400'
-        : 'bg-violet-500 hover:bg-violet-500';
+        ? 'Support Agent'
+        : 'Customer';
 
   return (
-    <Card className="overflow-hidden rounded-3xl border-0 shadow-xl">
+    <Card className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
+      {/* Ink Wash Header */}
 
-      {/* Header */}
+      <div className="relative h-28 overflow-hidden border-b border-border bg-muted/60">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(120,113,108,0.18),transparent_50%)]" />
 
-      <div className="h-28 bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-500" />
+        <div className="absolute -right-12 -top-20 h-48 w-48 rounded-full bg-primary/10 blur-3xl" />
+      </div>
 
       {/* Body */}
 
-      <div className="-mt-14 px-8 pb-8">
+      <div className="-mt-14 px-6 pb-8 sm:px-8">
+        {/* Avatar */}
 
-        <div className="flex justify-center">
-
-          <div className="flex h-28 w-28 items-center justify-center rounded-full border-4 border-background bg-emerald-500 text-4xl font-bold text-white shadow-lg">
-
-            {initials}
-
+        <div className="relative flex justify-center">
+          <div className="flex h-28 w-28 items-center justify-center rounded-full border-4 border-card bg-primary text-3xl font-semibold tracking-tight text-primary-foreground shadow-sm">
+            {initials || 'U'}
           </div>
-
         </div>
 
+        {/* Main Information */}
+
         <div className="mt-6 text-center">
-
-          <h2 className="text-2xl font-bold">
-
+          <h2 className="text-2xl font-semibold tracking-tight">
             {profile.name}
-
           </h2>
 
-          <p className="mt-1 text-muted-foreground">
-
+          <p className="mt-1 break-all text-sm text-muted-foreground">
             {profile.email}
-
           </p>
 
           <Badge
-            className={`mt-4 ${badgeColor}`}
+            variant="secondary"
+            className="mt-4"
           >
-            {profile.role}
+            {roleLabel}
           </Badge>
-
         </div>
 
-        <div className="mt-8 space-y-5 border-t pt-6">
+        {/* Details */}
+
+        <div className="mt-8 space-y-5 border-t border-border pt-6">
+          {/* Email */}
 
           <div className="flex items-center gap-3">
-
-            <div className="rounded-xl bg-muted p-2">
-
-              <Mail size={18} />
-
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border bg-muted">
+              <Mail
+                size={18}
+                className="text-muted-foreground"
+              />
             </div>
 
-            <div>
-
+            <div className="min-w-0">
               <p className="text-xs text-muted-foreground">
                 Email
               </p>
 
-              <p className="font-medium">
+              <p className="truncate text-sm font-medium">
                 {profile.email}
               </p>
-
             </div>
-
           </div>
 
+          {/* Organization */}
+
           <div className="flex items-center gap-3">
-
-            <div className="rounded-xl bg-muted p-2">
-
-              <Building2 size={18} />
-
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border bg-muted">
+              <Building2
+                size={18}
+                className="text-muted-foreground"
+              />
             </div>
 
-            <div>
-
+            <div className="min-w-0">
               <p className="text-xs text-muted-foreground">
                 Organization
               </p>
 
-              <p className="font-medium">
+              <p className="truncate text-sm font-medium">
                 {profile.organization.name}
               </p>
-
             </div>
-
           </div>
 
+          {/* Role */}
+
           <div className="flex items-center gap-3">
-
-            <div className="rounded-xl bg-muted p-2">
-
-              <ShieldCheck size={18} />
-
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border bg-muted">
+              <ShieldCheck
+                size={18}
+                className="text-muted-foreground"
+              />
             </div>
 
-            <div>
-
+            <div className="min-w-0">
               <p className="text-xs text-muted-foreground">
                 Role
               </p>
 
-              <p className="font-medium">
-                {profile.role}
+              <p className="text-sm font-medium">
+                {roleLabel}
               </p>
-
             </div>
-
           </div>
 
+          {/* User ID */}
+
           <div className="flex items-center gap-3">
-
-            <div className="rounded-xl bg-muted p-2">
-
-              <UserCircle2 size={18} />
-
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border bg-muted">
+              <UserCircle2
+                size={18}
+                className="text-muted-foreground"
+              />
             </div>
 
-            <div>
-
+            <div className="min-w-0">
               <p className="text-xs text-muted-foreground">
                 User ID
               </p>
 
-              <p className="truncate text-sm">
+              <p
+                className="truncate font-mono text-xs text-muted-foreground"
+                title={profile.id}
+              >
                 {profile.id}
               </p>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
-
     </Card>
   );
 }

@@ -7,6 +7,7 @@ import {
 
 import { AuthContext } from './auth-context';
 import { User } from './auth.types';
+
 import {
   getMe,
   logout as logoutApi,
@@ -41,9 +42,7 @@ export function AuthProvider({
         await getMe();
 
       setUser(response.data);
-    } catch (error) {
-      console.error(error);
-
+    } catch {
       localStorage.removeItem(
         'accessToken',
       );
@@ -55,11 +54,11 @@ export function AuthProvider({
   }
 
   useEffect(() => {
-    refreshUser();
+    void refreshUser();
   }, []);
 
   async function login(
-    user: User,
+    authenticatedUser: User,
     token: string,
   ) {
     localStorage.setItem(
@@ -67,17 +66,17 @@ export function AuthProvider({
       token,
     );
 
-    setUser(user);
-
-    // Sync with backend
-    await refreshUser();
+    setUser(
+      authenticatedUser,
+    );
   }
 
   async function logout() {
     try {
       await logoutApi();
-    } catch (error) {
-      console.error(error);
+    } catch {
+      // The server session may already be expired.
+      // Local authentication should still be cleared.
     } finally {
       localStorage.removeItem(
         'accessToken',

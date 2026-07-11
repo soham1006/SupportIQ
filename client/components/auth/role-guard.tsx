@@ -5,11 +5,13 @@ import { useRouter } from 'next/navigation';
 
 import { useAuth } from '@/features/auth/use-auth';
 
-interface Props {
-  allowedRoles: Array<
-    'ADMIN' | 'AGENT' | 'CUSTOMER'
-  >;
+type UserRole =
+  | 'ADMIN'
+  | 'AGENT'
+  | 'CUSTOMER';
 
+interface Props {
+  allowedRoles: UserRole[];
   children: React.ReactNode;
 }
 
@@ -19,37 +21,27 @@ export function RoleGuard({
 }: Props) {
   const router = useRouter();
 
-  const {
-    user,
-    loading,
-  } = useAuth();
+  const { user, loading } = useAuth();
 
   useEffect(() => {
-    if (loading || !user) {
+    if (loading) {
       return;
     }
 
-    if (
-      !allowedRoles.includes(user.role)
-    ) {
-      switch (user.role) {
-        case 'ADMIN':
-          router.replace(
-            '/dashboard/admin',
-          );
-          break;
+    if (!user) {
+      router.replace('/login');
+      return;
+    }
 
-        case 'AGENT':
-          router.replace(
-            '/dashboard/agent',
-          );
-          break;
+    if (!allowedRoles.includes(user.role)) {
+      const dashboardHref =
+        user.role === 'ADMIN'
+          ? '/dashboard/admin'
+          : user.role === 'AGENT'
+            ? '/dashboard/agent'
+            : '/dashboard/customer';
 
-        default:
-          router.replace(
-            '/dashboard/customer',
-          );
-      }
+      router.replace(dashboardHref);
     }
   }, [
     user,
@@ -61,29 +53,25 @@ export function RoleGuard({
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        Loading...
+        <p className="text-sm text-muted-foreground">
+          Loading...
+        </p>
       </div>
     );
   }
 
- if (!user) {
-  router.replace('/login');
+  if (
+    !user ||
+    !allowedRoles.includes(user.role)
+  ) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-sm text-muted-foreground">
+          Redirecting...
+        </p>
+      </div>
+    );
+  }
 
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      Redirecting...
-    </div>
-  );
-}
-
-if (!allowedRoles.includes(user.role)) {
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      Redirecting...
-    </div>
-  );
-}
-
-return children;
-
+  return <>{children}</>;
 }

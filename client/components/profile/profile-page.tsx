@@ -6,66 +6,89 @@ import { PageHeader } from '@/components/ui/page-header';
 
 import { useProfile } from '@/features/profile/use-profile';
 
-import { ProfileCard } from './profile-card';
 import { AccountCard } from './account-card';
+import { ProfileCard } from './profile-card';
 import { SecurityCard } from './security-card';
 
 export function ProfilePage() {
-  const { data, isLoading } =
-    useProfile();
+  const {
+    data,
+    isLoading,
+    isError,
+  } = useProfile();
 
   if (isLoading) {
     return (
       <DashboardLayout>
-        <div className="flex h-64 items-center justify-center">
-          Loading...
-        </div>
+        <PageContainer>
+          <div className="flex min-h-[60vh] items-center justify-center">
+            <div className="text-center">
+              <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-muted border-t-primary" />
+
+              <p className="mt-4 text-sm text-muted-foreground">
+                Loading your profile...
+              </p>
+            </div>
+          </div>
+        </PageContainer>
       </DashboardLayout>
     );
   }
 
-  if (!data) {
-  return (
-    <DashboardLayout>
-      <div className="flex h-64 items-center justify-center">
-        Unable to load profile.
-      </div>
-    </DashboardLayout>
-  );
-}
+  if (
+    isError ||
+    !data?.data
+  ) {
+    return (
+      <DashboardLayout>
+        <PageContainer>
+          <div className="flex min-h-[60vh] items-center justify-center">
+            <div className="max-w-md text-center">
+              <h2 className="text-xl font-semibold">
+                Unable to load profile
+              </h2>
 
-const profile = data.data;
+              <p className="mt-2 text-sm text-muted-foreground">
+                We couldn&apos;t load your account information.
+                Please refresh the page and try again.
+              </p>
+            </div>
+          </div>
+        </PageContainer>
+      </DashboardLayout>
+    );
+  }
 
-  return (
-    <DashboardLayout>
+  const profile = data.data;
 
-      <PageContainer>
+ return (
+  <DashboardLayout>
+    <PageContainer>
+      <PageHeader
+        title="Profile"
+        description="Manage your account information and security settings."
+      />
 
-        <PageHeader
-          title="Profile"
-          description="Manage your account information."
+      <div className="grid items-start gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
+        {/* Top Left */}
+
+        <ProfileCard
+          profile={profile}
         />
 
-        <div className="grid gap-6 xl:grid-cols-3">
+        {/* Top Right */}
 
-          <ProfileCard
-            profile={profile}
-          />
+        <AccountCard
+          profile={profile}
+        />
 
-          <div className="space-y-6 xl:col-span-2">
+        {/* Full Width Below */}
 
-            <AccountCard
-              profile={profile}
-            />
-
-            <SecurityCard />
-
-          </div>
-
+        <div className="xl:col-span-2">
+          <SecurityCard />
         </div>
-
-      </PageContainer>
-
-    </DashboardLayout>
-  );
+      </div>
+    </PageContainer>
+  </DashboardLayout>
+);
 }

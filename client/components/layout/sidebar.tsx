@@ -7,9 +7,12 @@ import {
   Upload,
   Users,
   Settings,
-  Sparkles,
   BarChart3,
 } from 'lucide-react';
+
+import Link from 'next/link';
+
+import Image from 'next/image';
 
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 
@@ -45,10 +48,13 @@ function SidebarContent() {
             shadow-sm
           "
           >
-            <Sparkles
-              size={18}
-              className="text-primary"
-            />
+           <Image
+  src="/brand/supportiq-icon.png"
+  alt=""
+  width={18}
+  height={18}
+  className="h-[50px] w-[50px] object-contain"
+/>
           </div>
 
           <div>
@@ -117,69 +123,26 @@ function SidebarContent() {
 
       {/* User */}
 
-      <div className="border-t border-sidebar-border p-4">
+     <div className="border-t border-sidebar-border p-4">
+  <Link
+    href="/profile"
+    className="flex w-full items-center gap-3 rounded-xl border border-transparent px-3 py-3 transition-all duration-200 hover:border-border hover:bg-accent/60"
+  >
+    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground shadow-sm">
+      {(user?.name?.[0] ?? 'U').toUpperCase()}
+    </div>
 
-        <button
-          className="
-          flex
-          w-full
-          items-center
-          gap-3
+    <div className="min-w-0 flex-1 text-left">
+      <p className="truncate text-sm font-medium text-foreground">
+        {user?.name ?? 'User'}
+      </p>
 
-          rounded-xl
-
-          border
-          border-transparent
-
-          px-3
-          py-3
-
-          transition-all
-          duration-200
-
-          hover:border-border
-          hover:bg-accent/60
-        "
-        >
-
-          <div
-            className="
-            flex
-            h-10
-            w-10
-            items-center
-            justify-center
-
-            rounded-full
-
-            bg-primary
-
-            text-sm
-            font-semibold
-
-            text-primary-foreground
-
-            shadow-sm
-          "
-          >
-            {(user?.name?.[0] ?? 'U').toUpperCase()}
-          </div>
-
-          <div className="min-w-0 flex-1 text-left">
-
-            <p className="truncate text-sm font-medium text-foreground">
-              {user?.name ?? 'User'}
-            </p>
-
-            <p className="text-xs text-muted-foreground">
-              View profile
-            </p>
-
-          </div>
-
-        </button>
-
-      </div>
+      <p className="text-xs text-muted-foreground">
+        View profile
+      </p>
+    </div>
+  </Link>
+</div>
     </>
   );
 }

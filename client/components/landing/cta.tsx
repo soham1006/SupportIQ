@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 
+import Image from 'next/image';
+
 import {
   ArrowRight,
-  Sparkles,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -40,7 +41,13 @@ export function CTA() {
 
             <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2.5">
 
-              <Sparkles size={15} />
+              <Image
+  src="/brand/supportiq-icon.png"
+  alt=""
+  width={18}
+  height={18}
+  className="h-[50px] w-[50px] object-contain"
+/>
 
               <span className="text-sm font-medium">
                 AI Customer Support Platform

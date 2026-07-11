@@ -2,8 +2,9 @@
 
 import {
   Send,
-  Sparkles,
 } from 'lucide-react';
+
+import Image from 'next/image';
 
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -50,7 +51,13 @@ export function ReplyComposer({
           onClick={onGenerate}
           disabled={generating}
         >
-          <Sparkles size={18} />
+          <Image
+  src="/brand/supportiq-icon.png"
+  alt=""
+  width={18}
+  height={18}
+  className="h-[50px] w-[50px] object-contain"
+/>
 
           {generating
             ? 'Generating...'

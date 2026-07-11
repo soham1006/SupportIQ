@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-import { Sparkles } from 'lucide-react';
+import Image from 'next/image';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -51,14 +51,15 @@ export function LandingNavbar() {
           className="flex items-center gap-3"
         >
 
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-border bg-card shadow-sm">
 
-            <Sparkles
-              size={18}
-              className="text-primary"
-            />
-
-          </div>
+            <Image
+  src="/brand/supportiq-icon.png"
+  alt="SupportIQ"
+  width={40}
+  height={40}
+  className="h-10 w-10 object-contain"
+  priority
+/>
 
           <div>
 

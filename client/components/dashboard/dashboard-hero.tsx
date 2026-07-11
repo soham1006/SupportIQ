@@ -2,8 +2,9 @@
 
 import {
   ArrowUpRight,
-  Sparkles,
 } from 'lucide-react';
+
+import Image from 'next/image';
 
 import { useAuth } from '@/features/auth/use-auth';
 
@@ -94,10 +95,13 @@ export function DashboardHero() {
             py-2
             "
           >
-            <Sparkles
-              size={16}
-              className="text-primary"
-            />
+            <Image
+  src="/brand/supportiq-icon.png"
+  alt=""
+  width={50}
+  height={50}
+  className="h-[50px] w-[50px] object-contain"
+/>
 
             <span className="text-sm font-medium text-muted-foreground">
               AI Customer Support Platform
@@ -118,7 +122,6 @@ export function DashboardHero() {
             <span className="text-primary">
               {user?.name ?? 'User'}
             </span>
-            👋
           </h1>
 
           <p

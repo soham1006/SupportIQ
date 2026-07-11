@@ -1,11 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import {
+  useEffect,
+  useState,
+} from 'react';
 
 import {
   Building2,
   Mail,
   Save,
+  ShieldCheck,
   User,
 } from 'lucide-react';
 
@@ -34,138 +38,181 @@ export function AccountCard({
     setName(profile.name);
   }, [profile.name]);
 
-  return (
-    <Card className="rounded-3xl border-0 shadow-xl">
+  const trimmedName =
+    name.trim();
 
+  const hasChanges =
+    trimmedName !==
+    profile.name.trim();
+
+  const canSave =
+    trimmedName.length > 0 &&
+    hasChanges &&
+    !updateProfile.isPending;
+
+  function handleSave() {
+    if (!canSave) {
+      return;
+    }
+
+    updateProfile.mutate({
+      name: trimmedName,
+    });
+  }
+
+  return (
+    <Card className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
       {/* Header */}
 
-      <div className="border-b px-8 py-6">
-
-        <h2 className="text-2xl font-bold">
+      <div className="border-b border-border px-6 py-6 sm:px-8">
+        <h2 className="text-2xl font-semibold tracking-tight">
           Account Information
         </h2>
 
-        <p className="mt-1 text-muted-foreground">
-          Update your personal details.
+        <p className="mt-1 text-sm text-muted-foreground">
+          Manage your personal and workspace information.
         </p>
-
       </div>
 
       {/* Form */}
 
-      <div className="space-y-8 p-8">
+      <div className="space-y-8 p-6 sm:p-8">
+        {/* Personal Information */}
 
-        {/* Name */}
+        <div>
+          <h3 className="mb-5 text-sm font-medium text-muted-foreground">
+            Personal Information
+          </h3>
 
-        <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Name */}
 
-          <div>
+            <div className="space-y-2">
+              <Label
+                htmlFor="profile-name"
+                className="flex items-center gap-2"
+              >
+                <User size={16} />
 
-            <Label className="mb-2 flex items-center gap-2">
+                Full Name
+              </Label>
 
-              <User size={16} />
+              <Input
+                id="profile-name"
+                value={name}
+                onChange={event =>
+                  setName(
+                    event.target.value,
+                  )
+                }
+                placeholder="Enter your full name"
+              />
+            </div>
 
-              Full Name
+            {/* Email */}
 
-            </Label>
+            <div className="space-y-2">
+              <Label
+                htmlFor="profile-email"
+                className="flex items-center gap-2"
+              >
+                <Mail size={16} />
 
-            <Input
-              value={name}
-              onChange={(e) =>
-                setName(
-                  e.target.value,
-                )
-              }
-            />
+                Email
+              </Label>
 
+              <Input
+                id="profile-email"
+                value={profile.email}
+                disabled
+                readOnly
+              />
+
+              <p className="text-xs text-muted-foreground">
+                Your email address cannot be changed.
+              </p>
+            </div>
           </div>
-
-          <div>
-
-            <Label className="mb-2 flex items-center gap-2">
-
-              <Mail size={16} />
-
-              Email
-
-            </Label>
-
-            <Input
-              value={profile.email}
-              disabled
-            />
-
-          </div>
-
         </div>
 
-        {/* Organization */}
+        {/* Workspace Information */}
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="border-t border-border pt-8">
+          <h3 className="mb-5 text-sm font-medium text-muted-foreground">
+            Workspace Information
+          </h3>
 
-          <div>
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Organization */}
 
-            <Label className="mb-2 flex items-center gap-2">
+            <div className="space-y-2">
+              <Label
+                htmlFor="profile-organization"
+                className="flex items-center gap-2"
+              >
+                <Building2 size={16} />
 
-              <Building2 size={16} />
+                Organization
+              </Label>
 
-              Organization
+              <Input
+                id="profile-organization"
+                value={
+                  profile.organization
+                    .name
+                }
+                disabled
+                readOnly
+              />
+            </div>
 
-            </Label>
+            {/* Role */}
 
-            <Input
-              value={
-                profile.organization
-                  .name
-              }
-              disabled
-            />
+            <div className="space-y-2">
+              <Label
+                htmlFor="profile-role"
+                className="flex items-center gap-2"
+              >
+                <ShieldCheck
+                  size={16}
+                />
 
+                Role
+              </Label>
+
+              <Input
+                id="profile-role"
+                value={profile.role}
+                disabled
+                readOnly
+              />
+            </div>
           </div>
-
-          <div>
-
-            <Label className="mb-2">
-              Role
-            </Label>
-
-            <Input
-              value={profile.role}
-              disabled
-            />
-
-          </div>
-
         </div>
 
         {/* Footer */}
 
-        <div className="flex justify-end">
+        <div className="flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-muted-foreground">
+            {hasChanges
+              ? 'You have unsaved changes.'
+              : 'Your profile is up to date.'}
+          </p>
 
           <Button
             size="lg"
-            disabled={
-              updateProfile.isPending
-            }
-            onClick={() =>
-              updateProfile.mutate({
-                name,
-              })
-            }
+            disabled={!canSave}
+            onClick={handleSave}
+            className="gap-2"
           >
-
             <Save size={18} />
 
             {updateProfile.isPending
               ? 'Saving...'
               : 'Save Changes'}
-
           </Button>
-
         </div>
-
       </div>
-
     </Card>
   );
 }

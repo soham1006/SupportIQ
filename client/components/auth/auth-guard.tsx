@@ -14,30 +14,20 @@ export function AuthGuard({
 }: Props) {
   const router = useRouter();
 
-  const {
-    user,
-    loading,
-  } = useAuth();
+  const { user, loading } = useAuth();
 
   useEffect(() => {
-    if (
-      !loading &&
-      !user
-    ) {
+    if (!loading && !user) {
       router.replace('/login');
     }
-  }, [
-    loading,
-    user,
-    router,
-  ]);
+  }, [loading, user, router]);
 
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-
-        Loading...
-
+        <p className="text-sm text-muted-foreground">
+          Loading...
+        </p>
       </div>
     );
   }
@@ -46,5 +36,5 @@ export function AuthGuard({
     return null;
   }
 
-  return children;
+  return <>{children}</>;
 }

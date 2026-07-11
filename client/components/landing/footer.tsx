@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 
-import { Sparkles } from 'lucide-react';
+import Image from 'next/image';
 
 export function Footer() {
   return (
@@ -34,12 +34,13 @@ export function Footer() {
                 bg-card
                 "
               >
-
-                <Sparkles
-                  size={18}
-                  className="text-primary"
-                />
-
+<Image
+  src="/brand/supportiq-icon.png"
+  alt=""
+  width={18}
+  height={18}
+  className="h-[50px] w-[50px] object-contain"
+/>
               </div>
 
               <div>
