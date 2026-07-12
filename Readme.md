@@ -59,6 +59,16 @@ Track customer support requests, priorities, statuses, and agent assignments.
 
 ![Ticket Management](docs/screenshots/tickets.png)
 
+### Analytics
+
+Monitor Insights, Performance & Top Agents.
+
+![Analytics](docs/screenshots/Analytics1.png)
+
+(docs/screenshots/Analytics2.png)
+
+(docs/screenshots/Analytics3.png)
+
 ### Agent Management
 
 Manage support agents, skills, availability, and assigned workloads.
