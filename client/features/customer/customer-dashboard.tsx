@@ -2,94 +2,100 @@
 
 import Link from 'next/link';
 
+import {
+  ArrowRight,
+  MessageSquare,
+  Ticket,
+} from 'lucide-react';
+
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { PageContainer } from '@/components/ui/page-container';
 import { PageHeader } from '@/components/ui/page-header';
 
+import { Button } from '@/components/ui/button';
+
+import { useAuth } from '@/features/auth/use-auth';
+
 export function CustomerDashboard() {
+  const { user } = useAuth();
+
   return (
     <DashboardLayout>
-
       <PageContainer>
-
         <PageHeader
-          title="Welcome back 👋"
-          description="Manage conversations, AI support, knowledge base and tickets."
+          title={`Welcome back, ${user?.name ?? 'Customer'} `}
+          description="Get AI-powered answers and manage your support requests."
         />
 
-        <p className="mb-8 text-muted-foreground">
-          How can SupportIQ help you today?
-        </p>
-
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-
+        <div className="grid gap-6 md:grid-cols-2">
           {/* AI Assistant */}
 
-          <div className="rounded-2xl border bg-card p-6 shadow-sm">
+          <div className="rounded-2xl border bg-card p-7 shadow-sm">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted">
+              <MessageSquare
+                size={22}
+                className="text-primary"
+              />
+            </div>
 
-            <h2 className="mb-2 text-xl font-semibold">
+            <h2 className="mt-6 text-xl font-semibold">
               AI Assistant
             </h2>
 
-            <p className="mb-6 text-sm text-muted-foreground">
-              Ask questions about your uploaded documents and receive AI-powered answers.
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              Ask questions and get answers based on your organization&apos;s
+              knowledge base.
             </p>
 
-            <Link
-              href="/chat"
-              className="inline-flex rounded-lg bg-primary-500 px-5 py-2 text-white transition hover:bg-emerald-700"
+            <Button
+              asChild
+              className="mt-6 gap-2"
             >
-              Start Chat
-            </Link>
+              <Link href="/chat">
+                Start Chat
 
-          </div>
-
-          {/* Knowledge Base */}
-
-          <div className="rounded-2xl border bg-card p-6 shadow-sm">
-
-            <h2 className="mb-2 text-xl font-semibold">
-              Knowledge Base
-            </h2>
-
-            <p className="mb-6 text-sm text-muted-foreground">
-              Upload PDFs and manage your organizations knowledge base.
-            </p>
-
-            <Link
-              href="/knowledge"
-              className="inline-flex rounded-lg bg-primary-500 px-5 py-2 text-white transition hover:bg-emerald-700"
-            >
-              Manage Documents
-            </Link>
-
+                <ArrowRight
+                  size={17}
+                />
+              </Link>
+            </Button>
           </div>
 
           {/* Tickets */}
 
-          <div className="rounded-2xl border bg-card p-6 shadow-sm">
+          <div className="rounded-2xl border bg-card p-7 shadow-sm">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted">
+              <Ticket
+                size={22}
+                className="text-primary"
+              />
+            </div>
 
-            <h2 className="mb-2 text-xl font-semibold">
+            <h2 className="mt-6 text-xl font-semibold">
               My Tickets
             </h2>
 
-            <p className="mb-6 text-sm text-muted-foreground">
-              View the status of your support requests and AI escalations.
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              Track your support requests and follow the progress of issues
+              escalated to the support team.
             </p>
 
-            <Link
-              href="/tickets"
-              className="inline-flex rounded-lg bg-primary-500 px-5 py-2 text-white transition hover:bg-emerald-700"
+            <Button
+              asChild
+              variant="outline"
+              className="mt-6 gap-2"
             >
-              View Tickets
-            </Link>
+              <Link href="/tickets">
+                View My Tickets
 
+                <ArrowRight
+                  size={17}
+                />
+              </Link>
+            </Button>
           </div>
-
         </div>
-
       </PageContainer>
-
     </DashboardLayout>
   );
 }

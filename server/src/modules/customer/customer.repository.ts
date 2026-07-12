@@ -1,5 +1,8 @@
+import {
+  UserRole,
+} from '@prisma/client';
+
 import { prisma } from '../../database/prisma';
-import { UserRole } from '@prisma/client';
 
 export class CustomerRepository {
   async findAll(
@@ -8,7 +11,7 @@ export class CustomerRepository {
     return prisma.user.findMany({
       where: {
         organizationId,
-        role: UserRole.ADMIN,
+        role: UserRole.CUSTOMER,
       },
 
       select: {
@@ -39,7 +42,7 @@ export class CustomerRepository {
       where: {
         id,
         organizationId,
-        role: UserRole.ADMIN,
+        role: UserRole.CUSTOMER,
       },
 
       select: {
@@ -87,9 +90,11 @@ export class CustomerRepository {
         name: data.name,
         email: data.email,
         password: data.password,
+
         organizationId:
           data.organizationId,
-        role: UserRole.ADMIN,
+
+        role: UserRole.CUSTOMER,
       },
 
       select: {
@@ -110,9 +115,11 @@ export class CustomerRepository {
       isActive?: boolean;
     },
   ) {
-    return prisma.user.update({
+    return prisma.user.updateMany({
       where: {
         id,
+        organizationId,
+        role: UserRole.CUSTOMER,
       },
 
       data,
@@ -123,9 +130,11 @@ export class CustomerRepository {
     id: string,
     organizationId: string,
   ) {
-    return prisma.user.update({
+    return prisma.user.updateMany({
       where: {
         id,
+        organizationId,
+        role: UserRole.CUSTOMER,
       },
 
       data: {

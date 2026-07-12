@@ -53,7 +53,7 @@ model Organization {
   id String @id @default(cuid())
 
   name String
-  slug String @unique
+  slug String? @unique
 
   logo    String?
   website String?

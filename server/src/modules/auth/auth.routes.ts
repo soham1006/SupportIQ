@@ -4,10 +4,11 @@ import { authController } from './auth.controller';
 import { authenticate } from './auth.middleware';
 import { authorize } from './auth.middleware';
 import { UserRole } from '@prisma/client';
-
+import {
+  customerRegisterSchema,
+} from './auth.validation';
 import {
   loginSchema,
-  logoutSchema,
   refreshTokenSchema,
   registerSchema,
 } from './auth.validation';
@@ -68,6 +69,16 @@ router.get(
       message: 'Welcome Agent',
     });
   },
+);
+
+router.post(
+  '/customer/register',
+  validate(
+    customerRegisterSchema,
+  ),
+  authController.registerCustomer.bind(
+    authController,
+  ),
 );
 
 export default router;

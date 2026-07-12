@@ -1,15 +1,20 @@
 import { prisma } from '../../database/prisma';
 
-export class OrganizationRepository {
-  async create(name: string) {
-    const baseSlug = name
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '');
+import {
+  createSlug,
+} from '../../utils/slug';
 
-    let slug = baseSlug;
-    let count = 1;
+export class OrganizationRepository {
+  async create(
+    name: string,
+  ) {
+    const baseSlug =
+      createSlug(name);
+
+    let slug =
+      baseSlug;
+
+    let counter = 1;
 
     while (
       await prisma.organization.findUnique({
@@ -18,12 +23,25 @@ export class OrganizationRepository {
         },
       })
     ) {
-      slug = `${baseSlug}-${count++}`;
+      slug =
+        `${baseSlug}-${counter}`;
+
+      counter++;
     }
 
     return prisma.organization.create({
       data: {
         name,
+        slug,
+      },
+    });
+  }
+
+  async findBySlug(
+    slug: string,
+  ) {
+    return prisma.organization.findUnique({
+      where: {
         slug,
       },
     });

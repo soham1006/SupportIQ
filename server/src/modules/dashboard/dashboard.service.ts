@@ -8,20 +8,32 @@ export class DashboardService {
       organizationId,
     );
   }
+
+  async getAgentStats(
+    agentId: string,
+    organizationId: string,
+  ) {
+    return dashboardRepository.getAgentStats(
+      agentId,
+      organizationId,
+    );
+  }
+
   async getAgentWorkload(
-  organizationId: string,
-) {
-  return dashboardRepository.getAgentWorkload(
-    organizationId,
-  );
-}
-async getRecentTickets(
-  organizationId: string,
-) {
-  return dashboardRepository.getRecentTickets(
-    organizationId,
-  );
-}
+    organizationId: string,
+  ) {
+    return dashboardRepository.getAgentWorkload(
+      organizationId,
+    );
+  }
+
+  async getRecentTickets(
+    organizationId: string,
+  ) {
+    return dashboardRepository.getRecentTickets(
+      organizationId,
+    );
+  }
 }
 
 export const dashboardService =

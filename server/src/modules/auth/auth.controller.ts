@@ -3,6 +3,9 @@ import {
   Request,
   Response,
 } from 'express';
+import {
+  CustomerRegisterInput,
+} from './auth.validation';
 
 import { authService } from './auth.service';
 import { AuthRequest } from '../../shared/types/AuthRequest';
@@ -177,6 +180,31 @@ export class AuthController {
       data: req.user,
     });
   }
+
+  async registerCustomer(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const body =
+      req.body as CustomerRegisterInput;
+
+    const customer =
+      await authService.registerCustomer(
+        body,
+      );
+
+    res.status(201).json({
+      success: true,
+      data: customer,
+      message:
+        'Customer account created successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+}
 }
 
 export const authController =

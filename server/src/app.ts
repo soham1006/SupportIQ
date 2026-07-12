@@ -19,6 +19,11 @@ import notificationRoutes from "./modules/notification/notification.routes";
 import chatRoutes from "./modules/chat/chat.routes";
 import customerRoutes from './modules/customer/customer.routes';
 import profileRoutes from "./modules/profile/profile.routes";
+import organizationRoutes from './modules/organization/organization.routes';
+
+
+
+
 const allowedOrigins = [
   'http://localhost:3000',
   process.env.CLIENT_URL,
@@ -86,7 +91,10 @@ app.use(
   '/api/v1/profile',
   profileRoutes,
 );
-
+app.use(
+  '/api/v1/organizations',
+  organizationRoutes,
+);
 app.use(notFoundHandler);
 
 app.use(errorHandler);

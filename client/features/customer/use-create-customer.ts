@@ -1,3 +1,5 @@
+'use client';
+
 import {
   useMutation,
   useQueryClient,
@@ -10,11 +12,14 @@ export function useCreateCustomer() {
     useQueryClient();
 
   return useMutation({
-    mutationFn: createCustomer,
+    mutationFn:
+      createCustomer,
 
-    onSuccess() {
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['customers'],
+        queryKey: [
+          'customers',
+        ],
       });
     },
   });

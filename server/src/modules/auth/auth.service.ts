@@ -3,6 +3,7 @@ import { authRepository } from './auth.repository';
 import {
   RegisterInput,
   LoginInput,
+  CustomerRegisterInput,
 } from './auth.validation';
 import {
   hashPassword,
@@ -247,6 +248,65 @@ export class AuthService {
       refreshToken,
     );
   }
+  async registerCustomer(
+  data: CustomerRegisterInput,
+) {
+  const existingUser =
+    await authRepository.findUserByEmail(
+      data.email,
+    );
+
+  if (existingUser) {
+    throw new ApiError(
+      409,
+      'Email already exists',
+    );
+  }
+
+  const organization =
+    await organizationRepository.findBySlug(
+      data.workspaceSlug,
+    );
+
+  if (!organization) {
+    throw new ApiError(
+      404,
+      'Workspace not found',
+    );
+  }
+
+  const hashedPassword =
+    await hashPassword(
+      data.password,
+    );
+
+  const user =
+    await authRepository.createUser({
+      name: data.name,
+      email: data.email,
+      password: hashedPassword,
+
+      role: UserRole.CUSTOMER,
+
+      organization: {
+        connect: {
+          id: organization.id,
+        },
+      },
+    });
+
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+
+    organization: {
+      name: organization.name,
+      slug: organization.slug,
+    },
+  };
+}
 }
 
 export const authService =
