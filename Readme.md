@@ -57,7 +57,7 @@ Admins can upload and manage PDF documents used by the RAG pipeline.
 
 Track customer support requests, priorities, statuses, and agent assignments.
 
-![Ticket Management](docs/screenshots/tickets.png)
+![Ticket Management](docs/screenshots/Tickets.png)
 
 ### Analytics
 
@@ -394,3 +394,7 @@ Built as a full-stack AI project demonstrating:
 ## License
 
 This project is licensed under the MIT License.
+
+## Acknowledgements
+
+SupportIQ was submitted as part of the Digital Heroes Full Stack Developer Trial.
