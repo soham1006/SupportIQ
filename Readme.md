@@ -1,14 +1,14 @@
 # SupportIQ
 
-> An AI-powered customer support platform that answers customer questions from organization-specific knowledge bases using Retrieval-Augmented Generation (RAG) and escalates unresolved queries to human support agents.
+> An AI-powered customer support platform that answers customer questions from organization-specific knowledge bases using Retrieval-Augmented Generation (RAG) and supports escalation to human support agents.
 
 SupportIQ combines AI-powered question answering, document retrieval, ticket management, agent assignment, analytics, and role-based workflows in a single full-stack platform.
 
 ## Live Demo
 
 - **Application:** https://support-iq-steel.vercel.app
-- **Customer Support Portal:** `/support/[workspace-slug]`
-- **GitHub Repository:** Add your GitHub repository URL
+- **Customer Support Portal:** https://support-iq-steel.vercel.app/support/shrisanwariya-hotel-restaurant
+- **GitHub Repository:** https://github.com/soham1006/SupportIQ
 
 > The backend is hosted on a free-tier service, so the first request may take a few seconds while the server starts.
 
@@ -16,16 +16,16 @@ SupportIQ combines AI-powered question answering, document retrieval, ticket man
 
 ## Features
 
-- **RAG-powered AI Assistant** — Answers customer questions using organization-specific knowledge.
+- **RAG-Powered AI Assistant** — Answers questions using context retrieved from organization-specific knowledge.
 - **Knowledge Base Management** — Upload and process PDF documents for AI-powered retrieval.
 - **Semantic Search** — Uses vector embeddings and ChromaDB to retrieve relevant document context.
-- **AI Ticket Escalation** — Unresolved customer queries can be converted into support tickets.
-- **Skill-Based Agent Assignment** — Routes tickets to suitable support agents.
-- **Role-Based Access Control** — Separate permissions and dashboards for Admins, Agents, and Customers.
-- **Workspace-Specific Support Portals** — Each organization receives a unique `/support/[slug]` customer onboarding page.
-- **Multi-Organization Architecture** — Organization data and support workflows remain isolated.
-- **Support Analytics** — Track ticket activity, agent workload, and knowledge-base statistics.
-- **Secure Authentication** — JWT access and refresh token authentication.
+- **Ticket Escalation** — Unresolved customer queries can be converted into support tickets.
+- **Agent Assignment** — Supports routing and assigning support tickets to agents.
+- **Role-Based Access Control** — Provides separate permissions and experiences for Admins, Agents, and Customers.
+- **Workspace-Specific Support Portals** — Gives each organization a unique `/support/[slug]` customer onboarding page.
+- **Multi-Organization Architecture** — Isolates organization data and support workflows between workspaces.
+- **Support Analytics** — Tracks ticket activity, agent workload, performance, and knowledge-base statistics.
+- **Secure Authentication** — Uses JWT access and refresh tokens with protected backend routes.
 
 ---
 
@@ -39,17 +39,17 @@ Monitor tickets, agents, knowledge-base activity, and overall support operations
 
 ![Dashboard Analytics](docs/screenshots/dashboard2.png)
 
-(docs/screenshots/dashboard3.png)
+![Dashboard Ticket Activity](docs/screenshots/dashboard3.png)
 
 ### AI Assistant
 
-Customers can ask questions and receive context-aware answers based on the organization's uploaded knowledge base.
+Ask questions and receive context-aware answers based on the organization's uploaded knowledge base.
 
 ![AI Assistant](docs/screenshots/AI-Assistant.png)
 
 ### Knowledge Base
 
-Admins can upload and manage PDF documents used by the RAG pipeline.
+Upload and manage PDF documents used by the RAG pipeline.
 
 ![Knowledge Base](docs/screenshots/knowledge-base.png)
 
@@ -61,13 +61,13 @@ Track customer support requests, priorities, statuses, and agent assignments.
 
 ### Analytics
 
-Monitor Insights, Performance & Top Agents.
+Monitor support insights, ticket performance, and top-performing agents.
 
-![Analytics](docs/screenshots/Analytics1.png)
+![Analytics Overview](docs/screenshots/Analytics1.png)
 
-(docs/screenshots/Analytics2.png)
+![Performance Analytics](docs/screenshots/Analytics2.png)
 
-(docs/screenshots/Analytics3.png)
+![Top Agents](docs/screenshots/Analytics3.png)
 
 ### Agent Management
 
@@ -104,7 +104,7 @@ Each organization receives a unique public support portal where customers can cr
 
 - Uses the AI assistant
 - Receives answers from the organization's knowledge base
-- Creates or receives escalated support tickets
+- Accesses support tickets
 - Tracks support requests
 
 ---
@@ -141,10 +141,10 @@ Each organization receives a unique public support portal where customers can cr
 
 ### Deployment
 
-- Vercel — Frontend
-- Render — Backend
-- PostgreSQL — Relational data
-- ChromaDB — Vector storage
+- **Vercel** — Frontend
+- **Render** — Backend
+- **PostgreSQL** — Relational data
+- **ChromaDB** — Vector storage
 
 ---
 
@@ -176,13 +176,13 @@ Tickets are assigned to support agents
 
 ## Customer Onboarding
 
-Each organization receives a unique support portal:
+Each organization receives a unique public support portal:
 
 ```text
 /support/[workspace-slug]
 ```
 
-For example:
+Example:
 
 ```text
 /support/shrisanwariya-hotel-restaurant
@@ -199,12 +199,12 @@ Customer Login
             ↓
 AI Assistant
             ↓
-Support Ticket Escalation
+Support Ticket
             ↓
 Human Agent Support
 ```
 
-This allows multiple organizations to provide their own customer support experience through SupportIQ.
+This allows customers to join the correct organization without being manually created by an administrator.
 
 ---
 
@@ -212,7 +212,7 @@ This allows multiple organizations to provide their own customer support experie
 
 SupportIQ uses JWT-based authentication with access and refresh tokens.
 
-Authorization is enforced using role-based access control:
+Authorization is enforced through role-based access control:
 
 ```text
 ADMIN
@@ -236,7 +236,48 @@ CUSTOMER
 └── Tickets
 ```
 
-Protected backend routes validate both authentication and user roles before allowing access to sensitive operations.
+Protected backend routes validate authentication and user roles before allowing access to restricted operations.
+
+Organization-level filtering keeps workspace data isolated between different organizations.
+
+---
+
+## Architecture
+
+SupportIQ follows a modular full-stack architecture:
+
+```text
+Admin / Agent / Customer
+          │
+          ▼
+   Next.js Frontend
+          │
+          ▼
+    Express REST API
+       │        │
+       ▼        ▼
+ PostgreSQL   ChromaDB
+   (Prisma)   (Vectors)
+       │
+       ▼
+   Gemini AI
+```
+
+The backend separates responsibilities using:
+
+```text
+Route
+  ↓
+Controller
+  ↓
+Service
+  ↓
+Repository
+  ↓
+Database
+```
+
+For a detailed architecture overview, see [`docs/architecture.md`](docs/architecture.md).
 
 ---
 
@@ -248,19 +289,24 @@ SupportIQ/
 │   ├── app/
 │   ├── components/
 │   ├── features/
-│   └── lib/
+│   ├── lib/
+│   └── .env.example
 │
 ├── server/
 │   ├── prisma/
-│   └── src/
-│       ├── database/
-│       ├── modules/
-│       ├── shared/
-│       └── utils/
+│   ├── src/
+│   │   ├── database/
+│   │   ├── modules/
+│   │   ├── shared/
+│   │   └── utils/
+│   └── .env.example
 │
 ├── docs/
+│   ├── architecture.md
+│   ├── case-study.md
 │   └── screenshots/
 │
+├── LICENSE
 └── README.md
 ```
 
@@ -268,10 +314,20 @@ SupportIQ/
 
 ## Local Setup
 
+### Prerequisites
+
+Make sure you have:
+
+- Node.js installed
+- PostgreSQL database access
+- Gemini API credentials
+- ChromaDB credentials
+- Cloudinary credentials
+
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/soham1006/SupportIQ
+git clone https://github.com/soham1006/SupportIQ.git
 cd SupportIQ
 ```
 
@@ -284,14 +340,23 @@ npm install
 
 ### 3. Install backend dependencies
 
+From the project root:
+
 ```bash
-cd ../server
+cd server
 npm install
 ```
 
 ### 4. Configure environment variables
 
-Create the required `.env` files for the frontend and backend using the provided `.env.example` files.
+Create environment files from the provided examples:
+
+```text
+client/.env.example
+server/.env.example
+```
+
+Create the corresponding local `.env` files and add your own credentials.
 
 The application requires configuration for:
 
@@ -302,12 +367,13 @@ The application requires configuration for:
 - Cloudinary
 - Frontend and backend URLs
 
-Do not commit real API keys or secrets.
+> Never commit real API keys, database credentials, or other secrets.
 
 ### 5. Generate the Prisma client
 
+From the `server` directory:
+
 ```bash
-cd server
 npx prisma generate
 ```
 
@@ -323,16 +389,22 @@ npx prisma migrate dev
 npm run dev
 ```
 
+The backend runs on:
+
+```text
+http://localhost:5000
+```
+
 ### 8. Start the frontend
 
-Open another terminal:
+Open another terminal from the project root:
 
 ```bash
 cd client
 npm run dev
 ```
 
-The frontend will be available at:
+The frontend runs on:
 
 ```text
 http://localhost:3000
@@ -364,12 +436,35 @@ Admin Monitors Support Operations
 
 ---
 
+## Security
+
+SupportIQ includes:
+
+- Password hashing
+- JWT access and refresh tokens
+- Protected API routes
+- Role-based authorization
+- Organization-level data isolation
+- Request validation with Zod
+- Restricted CORS configuration
+- Environment-based secret management
+
+---
+
+## Case Study
+
+The project case study covers the problem, implementation approach, result, and key technical learnings.
+
+See [`docs/case-study.md`](docs/case-study.md).
+
+---
+
 ## Future Improvements
 
 - Streaming AI responses
 - Background document processing
 - Real-time ticket notifications
-- Advanced support analytics
+- Advanced analytics and reporting
 - Email-based customer notifications
 
 ---
@@ -378,11 +473,11 @@ Admin Monitors Support Operations
 
 **Soham Mewada**
 
-Built as a full-stack AI project demonstrating:
+SupportIQ was built as a full-stack AI project demonstrating:
 
 - Retrieval-Augmented Generation
 - Vector search and embeddings
-- AI integration with Gemini
+- Gemini AI integration
 - Multi-role authentication and authorization
 - Multi-organization application architecture
 - REST API development
@@ -391,10 +486,12 @@ Built as a full-stack AI project demonstrating:
 
 ---
 
-## License
-
-This project is licensed under the MIT License.
-
 ## Acknowledgements
 
-SupportIQ was submitted as part of the Digital Heroes Full Stack Developer Trial.
+SupportIQ was submitted as part of the **Digital Heroes Full Stack Developer Trial**.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
