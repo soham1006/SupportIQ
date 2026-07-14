@@ -35,7 +35,7 @@ SupportIQ combines AI-powered question answering, document retrieval, ticket man
 
 Monitor tickets, agents, knowledge-base activity, and overall support operations.
 
-![Admin Dashboard Overview](docs/screenshots/dashboard1.png)
+![Admin Dashboard Overview](docs/screenshots/dashBoard1.png)
 
 ![Dashboard Analytics](docs/screenshots/dashboard2.png)
 
