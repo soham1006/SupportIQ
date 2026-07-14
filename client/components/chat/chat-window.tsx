@@ -35,7 +35,7 @@ export function ChatWindow({
   const [question, setQuestion] =
     useState('');
 
-  const bottomRef =
+  const messagesRef =
     useRef<HTMLDivElement>(null);
 
   const {
@@ -45,14 +45,22 @@ export function ChatWindow({
     conversationId,
   );
 
-  const chat =
-    useChat();
+  const chat = useChat();
 
-const messages: ChatMessage[] =
-  data?.data ?? [];
+  const messages: ChatMessage[] =
+    data?.data ?? [];
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({
+    const container =
+      messagesRef.current;
+
+    if (!container) {
+      return;
+    }
+
+    container.scrollTo({
+      top:
+        container.scrollHeight,
       behavior: 'smooth',
     });
   }, [
@@ -82,9 +90,7 @@ const messages: ChatMessage[] =
           conversationId,
         });
 
-      if (
-        !conversationId
-      ) {
+      if (!conversationId) {
         onConversationCreated(
           response.data
             .conversationId,
@@ -96,11 +102,11 @@ const messages: ChatMessage[] =
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden">
 
       {/* Header */}
 
-      <div className="border-b border-border p-6">
+      <div className="shrink-0 border-b border-border p-6">
 
         <h2 className="text-xl font-semibold">
           AI Assistant
@@ -115,13 +121,18 @@ const messages: ChatMessage[] =
 
       {/* Messages */}
 
-      <div className="min-h-0 flex-1 overflow-y-auto p-6">
+      <div
+        ref={messagesRef}
+        className="min-h-0 flex-1 overflow-y-auto p-6"
+      >
 
         {isLoading ? (
+
           <TypingIndicator />
-        ) : messages.length ===
-          0 ? (
-          <div className="flex h-full flex-col items-center justify-center text-center">
+
+        ) : messages.length === 0 ? (
+
+          <div className="flex min-h-full flex-col items-center justify-center text-center">
 
             <Bot
               size={48}
@@ -140,7 +151,9 @@ const messages: ChatMessage[] =
             </p>
 
           </div>
+
         ) : (
+
           <div className="space-y-4">
 
             {messages.map(
@@ -148,6 +161,7 @@ const messages: ChatMessage[] =
                 message,
                 index,
               ) => (
+
                 <MessageBubble
                   key={
                     message.id ??
@@ -157,6 +171,7 @@ const messages: ChatMessage[] =
                     message
                   }
                 />
+
               ),
             )}
 
@@ -164,18 +179,15 @@ const messages: ChatMessage[] =
               <TypingIndicator />
             )}
 
-            <div
-              ref={bottomRef}
-            />
-
           </div>
+
         )}
 
       </div>
 
       {/* Input */}
 
-      <div className="border-t border-border p-5">
+      <div className="shrink-0 border-t border-border bg-card p-5">
 
         <div className="flex gap-3">
 
@@ -184,19 +196,19 @@ const messages: ChatMessage[] =
             disabled={
               chat.isPending
             }
-            onChange={e =>
+            onChange={(e) =>
               setQuestion(
-                e.target
-                  .value,
+                e.target.value,
               )
             }
-            onKeyDown={e => {
+            onKeyDown={(e) => {
               if (
                 e.key ===
                   'Enter' &&
                 !e.shiftKey
               ) {
                 e.preventDefault();
+
                 sendMessage();
               }
             }}

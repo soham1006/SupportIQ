@@ -1,5 +1,9 @@
+import {
+  TicketStatus,
+  UserRole,
+} from '@prisma/client';
+
 import { prisma } from '../../database/prisma';
-import { TicketStatus, UserRole } from '@prisma/client';
 
 export class AnalyticsRepository {
   async getOverview(
@@ -8,9 +12,12 @@ export class AnalyticsRepository {
     const [
       totalTickets,
       openTickets,
+      inProgressTickets,
       resolvedTickets,
+      closedTickets,
       totalAgents,
       totalDocuments,
+      averageAIConfidenceResult,
     ] = await Promise.all([
       prisma.ticket.count({
         where: {
@@ -21,14 +28,32 @@ export class AnalyticsRepository {
       prisma.ticket.count({
         where: {
           organizationId,
-          status: TicketStatus.OPEN,
+          status:
+            TicketStatus.OPEN,
         },
       }),
 
       prisma.ticket.count({
         where: {
           organizationId,
-          status: TicketStatus.RESOLVED,
+          status:
+            TicketStatus.IN_PROGRESS,
+        },
+      }),
+
+      prisma.ticket.count({
+        where: {
+          organizationId,
+          status:
+            TicketStatus.RESOLVED,
+        },
+      }),
+
+      prisma.ticket.count({
+        where: {
+          organizationId,
+          status:
+            TicketStatus.CLOSED,
         },
       }),
 
@@ -45,6 +70,20 @@ export class AnalyticsRepository {
           organizationId,
         },
       }),
+
+      prisma.ticket.aggregate({
+        where: {
+          organizationId,
+
+          aiConfidence: {
+            not: null,
+          },
+        },
+
+        _avg: {
+          aiConfidence: true,
+        },
+      }),
     ]);
 
     const resolutionRate =
@@ -58,163 +97,150 @@ export class AnalyticsRepository {
             ).toFixed(1),
           );
 
-    const inProgressTickets =
-  await prisma.ticket.count({
-    where: {
-      organizationId,
-      status: TicketStatus.IN_PROGRESS,
-    },
-  });
-
-const closedTickets =
-  await prisma.ticket.count({
-    where: {
-      organizationId,
-      status: TicketStatus.CLOSED,
-    },
-  });
-
-const averageAIConfidence =
-  await prisma.ticket.aggregate({
-    where: {
-      organizationId,
-    },
-
-    _avg: {
-      aiConfidence: true,
-    },
-  });
+    const averageAIConfidence =
+      Number(
+        (
+          Number(
+            averageAIConfidenceResult
+              ._avg
+              .aiConfidence ?? 0,
+          ) * 100
+        ).toFixed(1),
+      );
 
     return {
-  totalTickets,
-  openTickets,
-  inProgressTickets,
-  resolvedTickets,
-  closedTickets,
-  totalAgents,
-  totalDocuments,
-
-  resolutionRate,
-
-  averageAIConfidence:
-    Number(
-      averageAIConfidence._avg
-        .aiConfidence ?? 0,
-    ).toFixed(1),
-};
+      totalTickets,
+      openTickets,
+      inProgressTickets,
+      resolvedTickets,
+      closedTickets,
+      totalAgents,
+      totalDocuments,
+      resolutionRate,
+      averageAIConfidence,
+    };
   }
 
   async getTicketStatus(
-  organizationId: string,
-) {
-  const statuses = [
-    TicketStatus.OPEN,
-    TicketStatus.IN_PROGRESS,
-    TicketStatus.RESOLVED,
-    TicketStatus.CLOSED,
-  ];
+    organizationId: string,
+  ) {
+    const statuses = [
+      TicketStatus.OPEN,
+      TicketStatus.IN_PROGRESS,
+      TicketStatus.RESOLVED,
+      TicketStatus.CLOSED,
+    ];
 
-  const data = await Promise.all(
-    statuses.map(async status => ({
-      status,
-      count: await prisma.ticket.count({
-        where: {
-          organizationId,
-          status,
-        },
-      }),
-    })),
-  );
+    const data =
+      await Promise.all(
+        statuses.map(
+          async (status) => ({
+            status,
 
-  return data;
-}
-async getTicketTrend(
-  organizationId: string,
-) {
-  const tickets =
-    await prisma.ticket.findMany({
-      where: {
-        organizationId,
-      },
+            count:
+              await prisma.ticket.count({
+                where: {
+                  organizationId,
+                  status,
+                },
+              }),
+          }),
+        ),
+      );
 
-      select: {
-        createdAt: true,
-      },
-    });
-
-  const map = new Map<
-    string,
-    number
-  >();
-
-  for (const ticket of tickets) {
-    const date =
-      ticket.createdAt
-        .toISOString()
-        .split('T')[0];
-
-    map.set(
-      date,
-      (map.get(date) ?? 0) + 1,
-    );
+    return data;
   }
 
-  return Array.from(
-    map.entries(),
-  )
-    .sort(([a], [b]) =>
-      a.localeCompare(b),
+  async getTicketTrend(
+    organizationId: string,
+  ) {
+    const tickets =
+      await prisma.ticket.findMany({
+        where: {
+          organizationId,
+        },
+
+        select: {
+          createdAt: true,
+        },
+      });
+
+    const map = new Map<
+      string,
+      number
+    >();
+
+    for (const ticket of tickets) {
+      const date =
+        ticket.createdAt
+          .toISOString()
+          .split('T')[0];
+
+      map.set(
+        date,
+        (map.get(date) ?? 0) + 1,
+      );
+    }
+
+    return Array.from(
+      map.entries(),
     )
-    .map(([date, count]) => ({
-      date,
-      count,
-    }));
-}
+      .sort(([a], [b]) =>
+        a.localeCompare(b),
+      )
+      .map(
+        ([date, count]) => ({
+          date,
+          count,
+        }),
+      );
+  }
 
-async getTopAgents(
-  organizationId: string,
-) {
-  const agents =
-    await prisma.user.findMany({
-      where: {
-        organizationId,
-        role: UserRole.AGENT,
-      },
+  async getTopAgents(
+    organizationId: string,
+  ) {
+    const agents =
+      await prisma.user.findMany({
+        where: {
+          organizationId,
+          role: UserRole.AGENT,
+        },
 
-      select: {
-        id: true,
-        name: true,
-        email: true,
+        select: {
+          id: true,
+          name: true,
+          email: true,
 
-        assignedTickets: {
-          where: {
-            status:
-              TicketStatus.RESOLVED,
-          },
+          assignedTickets: {
+            where: {
+              status:
+                TicketStatus.RESOLVED,
+            },
 
-          select: {
-            id: true,
+            select: {
+              id: true,
+            },
           },
         },
-      },
-    });
+      });
 
-  return agents
-    .map(agent => ({
-      id: agent.id,
-      name: agent.name,
-      email: agent.email,
+    return agents
+      .map((agent) => ({
+        id: agent.id,
+        name: agent.name,
+        email: agent.email,
 
-      resolved:
-        agent.assignedTickets.length,
-    }))
-    .sort(
-      (a, b) =>
-        b.resolved - a.resolved,
-    )
-    .slice(0, 5);
-}
-
+        resolved:
+          agent.assignedTickets
+            .length,
+      }))
+      .sort(
+        (a, b) =>
+          b.resolved -
+          a.resolved,
+      )
+      .slice(0, 5);
+  }
 }
 
 export const analyticsRepository =

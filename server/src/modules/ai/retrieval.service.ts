@@ -4,6 +4,7 @@ import { getCollection } from './chroma.service';
 export class RetrievalService {
   async search(
     query: string,
+    organizationId: string,
     topK = 8,
   ) {
     const embedding =
@@ -19,7 +20,12 @@ export class RetrievalService {
         queryEmbeddings: [
           embedding,
         ],
+
         nResults: topK,
+
+        where: {
+          organizationId,
+        },
       });
 
     const documents =
@@ -73,7 +79,12 @@ export class RetrievalService {
         );
 
     console.log(
-      '\n===== Raw Retrieval =====',
+      '\n===== Organization Retrieval =====',
+    );
+
+    console.log(
+      'Organization:',
+      organizationId,
     );
 
     console.log(
@@ -85,20 +96,6 @@ export class RetrievalService {
       'Results found:',
       retrieved.length,
     );
-
-    if (
-      retrieved.length === 0
-    ) {
-      console.log(
-        'No chunks returned by Chroma.',
-      );
-
-      return {
-        documents: [],
-        metadatas: [],
-        distances: [],
-      };
-    }
 
     retrieved.forEach(
       (
@@ -138,28 +135,29 @@ export class RetrievalService {
     return {
       documents:
         retrieved.map(
-          item =>
+          (item) =>
             item.document,
         ),
 
       metadatas:
         retrieved.map(
-          item =>
+          (item) =>
             item.metadata,
         ),
 
-distances:
-  retrieved
-    .map(
-      item =>
-        item.distance,
-    )
-    .filter(
-      (
-        distance,
-      ): distance is number =>
-        distance !== null,
-    ),    };
+      distances:
+        retrieved
+          .map(
+            (item) =>
+              item.distance,
+          )
+          .filter(
+            (
+              distance,
+            ): distance is number =>
+              distance !== null,
+          ),
+    };
   }
 }
 

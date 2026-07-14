@@ -49,9 +49,10 @@ export class ChatService {
       );
 
     const retrieval =
-      await retrievalService.search(
-        question,
-      );
+  await retrievalService.search(
+    question,
+    organizationId,
+  );
 
     const prompt =
       promptService.buildPrompt(

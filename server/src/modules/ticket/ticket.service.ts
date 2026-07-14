@@ -121,9 +121,10 @@ export class TicketService {
       );
 
     return agentReplyService.generate(
-      ticket.description,
-      history,
-    );
+  ticket.description,
+  history,
+  organizationId,
+);
   }
 
   async updateStatus(
