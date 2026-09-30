@@ -32,7 +32,7 @@ export function AssignAgent({
       </h2>
 
       <select
-        defaultValue={
+        value={
           selected ?? ''
         }
         onChange={e =>

@@ -22,7 +22,11 @@ export function useAssignTicket() {
         agentId,
       ),
 
-    onSuccess: (_, variables) => {
+    onSuccess: (
+      _,
+      variables,
+    ) => {
+      // Refresh ticket details
       queryClient.invalidateQueries({
         queryKey: [
           'ticket',
@@ -30,8 +34,27 @@ export function useAssignTicket() {
         ],
       });
 
+      // Refresh tickets list
       queryClient.invalidateQueries({
-        queryKey: ['tickets'],
+        queryKey: [
+          'tickets',
+        ],
+      });
+
+      // Refresh dashboard recent tickets
+      queryClient.invalidateQueries({
+        queryKey: [
+          'dashboard',
+          'recent-tickets',
+        ],
+      });
+
+      // Refresh agent workload if assignment affects it
+      queryClient.invalidateQueries({
+        queryKey: [
+          'dashboard',
+          'agents',
+        ],
       });
     },
   });

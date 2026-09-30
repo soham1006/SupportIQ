@@ -104,14 +104,32 @@ export class ChatService {
     }
 
     const confidence =
-      confidenceService.calculate(
-        retrieval.distances,
-      );
+  confidenceService.calculate(
+    retrieval.distances,
+  );
 
-    const shouldEscalate =
-      confidenceService.shouldEscalate(
-        confidence,
-      );
+const normalizedAnswer =
+  answer
+    .trim()
+    .toLowerCase();
+
+const hasNoAnswer =
+  normalizedAnswer.includes(
+    "i don't have enough information",
+  );
+
+const hasNoRetrievedContext =
+  retrieval.documents.length === 0;
+
+const lowConfidence =
+  confidenceService.shouldEscalate(
+    confidence,
+  );
+
+const shouldEscalate =
+  hasNoAnswer ||
+  hasNoRetrievedContext ||
+  lowConfidence;
 
     let ticket = null;
 
